@@ -1,0 +1,404 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{49FD2033-3F79-4A48-90E7-32D9021C3B18}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>smartEdit</RootNamespace>
+    <AssemblyName>smartEdit</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <StartupObject>smartEdit.Program</StartupObject>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ScintillaNET">
+      <HintPath>..\..\Scintilla\ScintillaNet\ScintillaNET.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.SQLite">
+      <HintPath>lib\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Cmds\CmdOpenFile.cs" />
+    <Compile Include="Core\CmdBase.cs" />
+    <Compile Include="Core\CmdStack.cs" />
+    <Compile Include="Core\Collider2D.cs" />
+    <Compile Include="Core\ConnectorBase.cs" />
+    <Compile Include="Core\ControllerDocument.cs" />
+    <Compile Include="Core\InterfaceDiagram.cs" />
+    <Compile Include="Core\InterfaceShape.cs" />
+    <Compile Include="Core\InterfaceWidget.cs" />
+    <Compile Include="Core\JKFlowCore.cs" />
+    <Compile Include="Core\Log.cs" />
+    <Compile Include="Core\ModelDiagram.cs" />
+    <Compile Include="Core\ModelDocument.cs" />
+    <Compile Include="Core\Page.cs" />
+    <Compile Include="Core\Parser2.cs" />
+    <Compile Include="Core\ParserNode.cs" />
+    <Compile Include="Core\Project.cs" />
+    <Compile Include="Core\Tokenizer.cs" />
+    <Compile Include="Jump.cs" />
+    <Compile Include="ResourceManager.cs" />
+    <Compile Include="Core\Serializable.cs" />
+    <Compile Include="Core\SerializerBase.cs" />
+    <Compile Include="Core\ShapeBase.cs">
+    </Compile>
+    <Compile Include="Core\ShapeCmds.cs" />
+    <Compile Include="Core\ShapeCollection.cs" />
+    <Compile Include="Core\ShapeHandleBase.cs" />
+    <Compile Include="Core\ShapeLibrary.cs" />
+    <Compile Include="Core\WidgetDiagramCanvasState.cs" />
+    <Compile Include="DBBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DBBrowser.Designer.cs">
+      <DependentUpon>DBBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DBConnection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DBConnection.Designer.cs">
+      <DependentUpon>DBConnection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FlipSheet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FlipSheet.Designer.cs">
+      <DependentUpon>FlipSheet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TagBase.cs" />
+    <Compile Include="TagCache.cs" />
+    <Compile Include="TagUpdater.cs" />
+    <Compile Include="Utils\HotKeyManager.cs" />
+    <Compile Include="Utils\SearchManager.cs" />
+    <Compile Include="Utils\Utility.cs" />
+    <Compile Include="VwCode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VwCode.Designer.cs">
+      <DependentUpon>VwCode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyBrowser\PropertyField.cs" />
+    <Compile Include="PropertyBrowser\WidgetPropertyBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyBrowser\WidgetPropertyBrowser.Designer.cs">
+      <DependentUpon>WidgetPropertyBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\ShText.cs" />
+    <Compile Include="VwDiagram.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VwDiagram.Designer.cs">
+      <DependentUpon>VwDiagram.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MDIParent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MDIParent.Designer.cs">
+      <DependentUpon>MDIParent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DBBrowser.resx">
+      <DependentUpon>DBBrowser.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DBConnection.resx">
+      <DependentUpon>DBConnection.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FlipSheet.resx">
+      <DependentUpon>FlipSheet.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VwCode.resx">
+      <DependentUpon>VwCode.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyBrowser\WidgetPropertyBrowser.resx">
+      <DependentUpon>WidgetPropertyBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VwDiagram.resx">
+      <DependentUpon>VwDiagram.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MDIParent.resx">
+      <DependentUpon>MDIParent.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Widgets\Component1.resx">
+      <DependentUpon>Component1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Widgets\DockingControl.resx">
+      <DependentUpon>DockingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Widgets\frmTagList.resx">
+      <DependentUpon>frmTagList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Widgets\WidgetLogList.resx">
+      <DependentUpon>WidgetLogList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Widgets\WidgetProject.resx">
+      <DependentUpon>WidgetProject.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Widgets\WidgetCodePage.resx">
+      <DependentUpon>WidgetCodePage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Widgets\WidgetDiagramCanvas.resx">
+      <DependentUpon>WidgetDiagramCanvas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Widgets\WidgetDiagramPage.resx">
+      <DependentUpon>WidgetDiagramPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Widgets\WidgetShapePalette.resx">
+      <DependentUpon>WidgetShapePalette.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Widgets\FormShapeSettings.resx">
+      <DependentUpon>FormShapeSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Widgets\WidgetDiagramShapeTree.resx">
+      <DependentUpon>WidgetDiagramShapeTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Widgets\WidgetUndoRedo.resx">
+      <DependentUpon>WidgetUndoRedo.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="App.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="Widgets\Component1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Widgets\Component1.Designer.cs">
+      <DependentUpon>Component1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Widgets\DockingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Widgets\frmTagList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Widgets\frmTagList.designer.cs">
+      <DependentUpon>frmTagList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Widgets\WidgetLogList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Widgets\WidgetLogList.designer.cs">
+      <DependentUpon>WidgetLogList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Widgets\WidgetProject.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Widgets\WidgetProject.designer.cs">
+      <DependentUpon>WidgetProject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Widgets\WidgetCodePage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Widgets\WidgetCodePage.Designer.cs">
+      <DependentUpon>WidgetCodePage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Widgets\WidgetDiagramCanvas.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Widgets\WidgetDiagramCanvas.Designer.cs">
+      <DependentUpon>WidgetDiagramCanvas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Widgets\WidgetDiagramPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Widgets\WidgetDiagramPage.Designer.cs">
+      <DependentUpon>WidgetDiagramPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Widgets\WidgetShapePalette.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Widgets\WidgetShapePalette.Designer.cs">
+      <DependentUpon>WidgetShapePalette.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Widgets\FormShapeSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Widgets\FormShapeSettings.Designer.cs">
+      <DependentUpon>FormShapeSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Widgets\WidgetDiagramShapeTree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Widgets\WidgetDiagramShapeTree.Designer.cs">
+      <DependentUpon>WidgetDiagramShapeTree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Widgets\WidgetUndoRedo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Widgets\WidgetUndoRedo.Designer.cs">
+      <DependentUpon>WidgetUndoRedo.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SymbolDelete.png" />
+    <None Include="Resources\SymbolPagePreview.png" />
+    <None Include="Resources\SymbolPageNew.png" />
+    <None Include="Resources\Icon1.ico" />
+    <None Include="Resources\SymbolEmpty.png" />
+    <None Include="Resources\AddProj.png" />
+    <None Include="Resources\Bookmark.png" />
+    <None Include="Resources\Cursor.png" />
+    <None Include="Resources\Delete.png" />
+    <None Include="Resources\File.png" />
+    <None Include="Resources\FloderClose.png" />
+    <None Include="Resources\FloderOpen.png" />
+    <None Include="Resources\Next.png" />
+    <None Include="Resources\OpenProj.png" />
+    <None Include="Resources\Prev.png" />
+    <None Include="Resources\Proj.png" />
+    <None Include="Resources\ProjTab.png" />
+    <None Include="Resources\Refresh.png" />
+    <None Include="Resources\Search.png" />
+    <None Include="Resources\Setting.png" />
+    <None Include="Resources\TagView.png" />
+    <None Include="Resources\Tools.png" />
+    <None Include="Resources\ClassView\asm_macro.png" />
+    <None Include="Resources\ClassView\asm_proc.png" />
+    <None Include="Resources\ClassView\asm_section.png" />
+    <None Include="Resources\ClassView\asm_struct.png" />
+    <None Include="Resources\ClassView\c_class.png" />
+    <None Include="Resources\ClassView\c_enum.png" />
+    <None Include="Resources\ClassView\c_enumitem.png" />
+    <None Include="Resources\ClassView\c_event.png" />
+    <None Include="Resources\ClassView\c_field.png" />
+    <None Include="Resources\ClassView\c_field_ex.png" />
+    <None Include="Resources\ClassView\c_interface.png" />
+    <None Include="Resources\ClassView\c_macro.png" />
+    <None Include="Resources\ClassView\c_method.png" />
+    <None Include="Resources\ClassView\c_method_ex.png" />
+    <None Include="Resources\ClassView\c_namespace.png" />
+    <None Include="Resources\ClassView\c_property.png" />
+    <None Include="Resources\ClassView\c_struct.png" />
+    <None Include="Resources\ClassView\c_typedef.png" />
+    <None Include="Resources\ClassView\c_union.png" />
+    <None Include="Resources\ClassView\ini_section.png" />
+    <None Include="Resources\ClassView\JS.png" />
+    <None Include="Resources\ClassView\pascal_function.png" />
+    <None Include="Resources\ClassView\pascal_procedure.png" />
+    <None Include="Resources\ClassView\python_class.png" />
+    <None Include="Resources\ClassView\python_function.png" />
+    <None Include="Resources\ClassView\python_import.png" />
+    <None Include="Resources\ClassView\python_method.png" />
+    <None Include="Resources\ClassView\python_variable.png" />
+    <None Include="Resources\ClassView\xml_tag.png" />
+    <Content Include="Resources\pascal_function.png" />
+    <Content Include="Resources\pascal_procedure.png" />
+    <Content Include="Todo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

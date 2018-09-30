@@ -1,0 +1,16 @@
+bool bOK
+
+// a commander
+
+using "test.lvlibp:test.lvclass" as MyTest
+int iStation = 5;
+
+function STRANGE_ERROR(string source)
+{
+	//exception(599999,source,sSTATION_NAME)
+     while(true)
+     {
+         Station[sSTATION_NAME].ERROR(42, source, "We should never arrive here","Seems to be a sequence ERROR","Please contact PIA to get support!");
+     }
+	
+}

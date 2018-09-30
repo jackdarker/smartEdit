@@ -1,0 +1,15 @@
+ToDo:
+- BeginUpdate/ EndUpdate
+- Menu und Toolbars dynamisch erstellen und mergen
+- PropertyBrowser
+- Symbolbibliotheken und - ansicht
+- Controller zum Verwalten der Documente und Bedienelemnte
+- Contextmenu abhängig von gewähltem Shape
+- ActionPoints unabhängig vom Zoom immer gleich groß
+- Plugin-Interface für Shapes-Bibliotheken
+
+Solved:
+- Gitternetz und SnapToGrid
+- Copy/Paste
+- UndoStack und -commands
+- abspeichern als XML-Format

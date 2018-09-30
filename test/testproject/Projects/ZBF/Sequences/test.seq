@@ -1,0 +1,25 @@
+#include "StandardObj.seq"
+#include "helpers\sub.seq"
+int iX=5;
+double ytet;
+double xTet
+bool Return
+
+// a function to test something
+function test() -> bool
+{
+test()->Retu
+	if(Retu)
+	{
+	}
+  return(false)
+}
+function test2() -> int
+{
+  return(false)
+}
+
+function main() -> bool,string
+{
+   return(true,"")
+}

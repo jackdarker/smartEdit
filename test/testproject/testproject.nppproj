@@ -1,0 +1,15 @@
+<project author="">
+  <node name="testproject" isDir="True" isExpand="False">
+    <node name="Projects" isDir="True" isExpand="False">
+      <node name="ZBF" isDir="True" isExpand="False">
+        <node name="Sequences" isDir="True" isExpand="False">
+          <node name="helpers" isDir="True" isExpand="False">
+            <node name="sub.seq" isDir="False" isExpand="False" />
+          </node>
+          <node name="StandardObj.seq" isDir="False" isExpand="False" />
+          <node name="test.seq" isDir="False" isExpand="False" />
+        </node>
+      </node>
+    </node>
+  </node>
+</project>
