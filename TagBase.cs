@@ -272,7 +272,7 @@ namespace smartEdit.Tag
 
         static Dictionary<Language, TagParser> _Parsers = new Dictionary<Language, TagParser>();
         public static Dictionary<string, Language> Ext2Lang = new Dictionary<string, Language>();
-        static readonly string _CtagPath = Path.Combine(Config.Instance.NppProjectDir, "ctags.exe");
+        static readonly string _CtagPath = Path.Combine(""/*Config.Instance.NppProjectDir*/, "ctags.exe");
         static readonly string _TempFile;   // 临时文件
 
         static TagParser()
@@ -289,7 +289,7 @@ namespace smartEdit.Tag
         internal static void LoadExt2LangMapping()
         {
             Ext2Lang.Clear();
-            string ext2LangMapFile = Path.Combine(Config.Instance.NppProjectDir, "LanguageMap.txt");
+            string ext2LangMapFile = Path.Combine(/*Config.Instance.NppProjectDir*/"", "LanguageMap.txt");
             if (!File.Exists(ext2LangMapFile))
             {
                 string stdout = _ExecuteCtag("--list-maps");
@@ -367,7 +367,7 @@ namespace smartEdit.Tag
             List<string> lst = new List<string>();
             foreach (string key in Ext2Lang.Keys)
                 lst.Add(string.Format("{0}|{1}", key, Ext2Lang[key]));
-            string ext2LangMapFile = Path.Combine(Config.Instance.NppProjectDir, "LanguageMap.txt");
+            string ext2LangMapFile = Path.Combine(/*Config.Instance.NppProjectDir*/"", "LanguageMap.txt");
             File.WriteAllLines(ext2LangMapFile, lst.ToArray());
         }
         

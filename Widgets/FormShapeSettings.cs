@@ -22,12 +22,6 @@ namespace smartEdit.Widgets {
         public void SetObject(object[] EditThis) {
             this.propertyGrid1.SelectedObjects = EditThis;
         }
-        public void SetObject(Core.ShapeInterface Shape) {
-            this.propertyGrid1.SelectedObject = Shape;
-        }
-        public void SetObject(List<Core.ShapeInterface> Shapes) {
-            this.propertyGrid1.SelectedObjects = Shapes.ToArray();
-        }
         private void btOK_Click(object sender, EventArgs e) {
             try {
                 //m_Data.Server = ServerName.Text;

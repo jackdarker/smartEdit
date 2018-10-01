@@ -6,18 +6,19 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using smartEdit.Core;
 
 namespace smartEdit {
     public partial class VwCode : Form, Core.IDataView {
         [Serializable]
         public class VwData {
-            private string m_Query;
-            public string Query {
+            private string m_File;
+            public string File {
                 get {
-                    return m_Query;
+                    return m_File;
                 }
                 set {
-                    m_Query = value;
+                    m_File = value;
                     Modified = true;
                 }
             }
@@ -30,20 +31,17 @@ namespace smartEdit {
 
         public VwCode() {
             InitializeComponent();
+
         }
 
-        protected event smartEdit.Core.ShapeSelectedEventHandler EventSelect;
-        public void RegisterShapeSelected(smartEdit.Core.ControllerDocument Listener) {
-            EventSelect += new smartEdit.Core.ShapeSelectedEventHandler(Listener.OnShapeSelected);
+        public void LoadFile(String File) {
+            this.m_Data.File = File;
+            this.Text = File;
+            this.widgetCode.LoadFile(File);
         }
-        public void UnregisterShapeSelected(smartEdit.Core.ControllerDocument Listener) {
-            EventSelect -= new smartEdit.Core.ShapeSelectedEventHandler(Listener.OnShapeSelected);
-        }
-        protected virtual void FireShapeSelected(object sender, smartEdit.Core.ShapeInterface Shape) {//??notused
-            smartEdit.Core.ShapeSelectedEventHandler handler = EventSelect;
-            if (handler != null) {
-                handler(sender, Shape);
-            }
+        CmdStack m_CmdStack = new CmdStack();
+        public virtual CmdStack GetCmdStack() {
+            return m_CmdStack;
         }
         public void OnToolChanged(object sender, smartEdit.Core.MouseOperation Op) { }
         private void DBQuery_FormClosing(object sender, FormClosingEventArgs e) {
@@ -67,10 +65,9 @@ namespace smartEdit {
         public Core.ControllerDocument GetController() { return m_Controller; }
         public void SetController(Core.ControllerDocument Controller) {
             m_Controller = Controller;  //dont register??
-            this.widgetDiagramPage1.SetController(Controller);
+            this.widgetCode.SetController(Controller);
         }
         public void OnUpdateEvent(object sender, EventArgs e) {
-            this.Text = "123"; // GetController().GetCmdStack().GetActiveStack().CanUndo();
         }
         Core.ControllerDocument m_Controller = null;
 

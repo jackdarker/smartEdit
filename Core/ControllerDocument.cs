@@ -7,8 +7,23 @@ using System.Windows.Forms;
 namespace smartEdit.Core {
     //this is the controller that connects the Editor with the Model
     public class ControllerDocument : IController {
-        public ControllerDocument() {
+        private static volatile ControllerDocument instance;
+        private static object syncRoot = new Object();
+        public static ControllerDocument Instance {
+            get {
+                if (instance == null) {
+                    lock (syncRoot) {
+                        if (instance == null)
+                            instance = new ControllerDocument();
+                    }
+                }
+
+                return instance;
+            }
+        }
+        private ControllerDocument() {
             m_CmdStackGroup = new CmdStackGroup();
+            m_Views = new ViewManager();
             //m_CmdStackGroup.EventUpdate += new EventHandler<EventArgs>(OnUpdate);
           //  SetActiveModel(new smartEdit.Core.ModelDocument());
         }
@@ -54,7 +69,8 @@ namespace smartEdit.Core {
             if (handler != null) handler(sender, e);
 
         }
-
+        public virtual void ViewFocusChanged(IView View) { }
+        public virtual void ToolChanged() { }
         #endregion
         #region Save/Load
         public virtual void LoadFromFile(string FileName) {
@@ -68,6 +84,24 @@ namespace smartEdit.Core {
         }
 
         #endregion
+        #region Viewmanagement
+        public void OpenEditorForFile(String File) {
+            Form _frm = m_Views.GetFormForFile(File);
+            if (_frm == null) {
+                VwCode _Editor = ((MDIParent)GetTopLevelForm()).NewEditor();
+                _Editor.LoadFile(File);
+                _Editor.FormClosed+= new FormClosedEventHandler(
+                    delegate(object sender, FormClosedEventArgs e) {
+                        m_Views.RemoveForm((Form)sender); });
+                m_Views.AddForm(File, _Editor);
+                _Editor.Activate();
+            } else {
+                _frm.Activate();
+            }
+            //todo query controller which editor to use for this kind of file
+
+            //if there is already the file open in editor view just push it to top
+        }
         public virtual void RegisterView(IView View) {
 
             EventUpdate += View.OnUpdateEvent;
@@ -79,14 +113,14 @@ namespace smartEdit.Core {
             EventUpdate -= View.OnUpdateEvent;
         }
         public virtual void RegisterView(IDataView View) {
-            View.RegisterShapeSelected(this);
+            //View.RegisterShapeSelected(this);
             EventUpdate += View.OnUpdateEvent;
             EventToolChanged += new smartEdit.Core.ToolSelectedEventHandler(View.OnToolChanged);
             GetCmdStack().EventUpdate += View.OnUpdateEvent;
             FireUpdateEvent(this, new EventArgs());
         }
         public virtual void UnregisterView(IDataView View) {
-            View.UnregisterShapeSelected(this);
+           // View.UnregisterShapeSelected(this);
             GetCmdStack().EventUpdate -= View.OnUpdateEvent;
             EventUpdate -= View.OnUpdateEvent;
         }
@@ -103,24 +137,29 @@ namespace smartEdit.Core {
         }
         public virtual void RegisterView(IToolView View) {
             //EventUpdate += View.OnUpdateEvent; ??not required?
-            View.RegisterShapeSelected(this);
+       //     View.RegisterShapeSelected(this);
             View.RegisterToolSelected(this);
             FireUpdateEvent(this, new EventArgs());
         }
         public virtual void UnregisterView(IToolView View) {
             EventUpdate -= View.OnUpdateEvent;
-            View.UnregisterShapeSelected(this);
+     //       View.UnregisterShapeSelected(this);
         }
+        Form m_ParentForm;
+        public void SetTopLevelForm(Form Parent) {
+            m_ParentForm = Parent;
+        }
+        public Form GetTopLevelForm() {
+            return m_ParentForm;
+        }
+        #endregion
         public virtual void SetActiveModel(ModelDocument Model) {
             if (m_Model != null) {
                 m_Model.EventUpdate -= new UpdateEventHandler(FireUpdateEvent);
-                m_CmdStackGroup.RemoveStack(m_Model.GetUndoStack());
                 m_Model = null;
             }
             m_Model = Model;
             m_Model.EventUpdate += new UpdateEventHandler(FireUpdateEvent);
-            m_CmdStackGroup.AddStack(m_Model.GetUndoStack());
-            m_CmdStackGroup.SetActiveStack(m_Model.GetUndoStack());
         }
         /// <summary>
         /// Returns ToolMenuItems for the given TopLevel-Menu.  
@@ -212,7 +251,7 @@ namespace smartEdit.Core {
             if (GetModel() != null) {
             }
 
-            Item = new ToolStripMenuItem("&Kopieren", Properties.Resources.SymbolCopy, btCopyShape_Click);
+            Item = new ToolStripMenuItem("&Kopieren", Properties.Resources.SymbolCopy, Copy_Click);
             Item.ImageTransparentColor = System.Drawing.Color.Black;
             Item.MergeAction = MergeAction.Replace;
             Item.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
@@ -220,7 +259,7 @@ namespace smartEdit.Core {
             Item.Enabled = (Selected > 0);
             Items.Add(Item);
 
-            Item = new ToolStripMenuItem("&Einfügen", Properties.Resources.SymbolPaste, btPasteShape_Click);
+            Item = new ToolStripMenuItem("&Einfügen", Properties.Resources.SymbolPaste, Paste_Click);
             Item.ImageTransparentColor = System.Drawing.Color.Black;
             Item.MergeAction = MergeAction.Replace;
             Item.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
@@ -229,7 +268,7 @@ namespace smartEdit.Core {
             Item.Tag = ExtData; //stores MouseLocation
             Items.Add(Item);
 
-            Item = new ToolStripMenuItem("&Löschen", Properties.Resources.SymbolDelete, btDeleteShape_Click);
+            Item = new ToolStripMenuItem("&Löschen", Properties.Resources.SymbolDelete, Delete_Click);
             Item.ImageTransparentColor = System.Drawing.Color.Black;
             Item.MergeAction = MergeAction.Replace;
             Item.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
@@ -248,97 +287,11 @@ namespace smartEdit.Core {
         }
 
         #region UIEvents
-        private void btDeleteShape_Click(object sender, EventArgs e) {
-            Core.ElementEnumerator<Core.ShapeInterface> Iterator = GetModel().GetSelectedShapes();
-            Core.CmdMacro Cmd = new Core.CmdMacro();
-            int i = 0;
-            while (Iterator.MoveNext()) {
-                Cmd.AddCmd(new Core.CmdDeleteShape(GetModel(), Iterator.Current));
-                i++;
-                //Iterator = GetDiagram().GetSelectedShapes();
-            }
-            if (i != 0) GetModel().GetUndoStack().Push(Cmd);
+        private void Copy_Click(object sender, EventArgs e) {
         }
-        private void btCopyShape_Click(object sender, EventArgs e) {
-            try {
-                ToolStripItem contextMenuItem = (ToolStripItem)sender;
-                Control contextMenu = (Control)contextMenuItem.GetCurrentParent();
-                System.Drawing.Point Location = (contextMenu.Location);
-                System.Drawing.Point PointA, PointB;
-                Core.ElementEnumerator<Core.ShapeInterface> Iterator = GetModel().GetSelectedShapes();
-                Core.CmdMacro Cmd = new Core.CmdMacro();
-                List<ShapeInterface> Shapes = new List<ShapeInterface>();
-                ShapeInterface Shape = null;
-                DataObject _Data = new DataObject();
-                int i = 0;
-                SerializerXML _Stream = new SerializerXML("JKFLOW", "1.0.0.0");
-                MemoryStream MemStream = new MemoryStream();
-                _Stream.OpenOutputStream(MemStream);
-                string Node = "Shape";
-                while (Iterator.MoveNext()) {
-                    PointA = new System.Drawing.Point(Iterator.Current.GetBoundingBox().Left + 20, Iterator.Current.GetBoundingBox().Top + 20);
-                    PointB = new System.Drawing.Point(Iterator.Current.GetBoundingBox().Right + 20, Iterator.Current.GetBoundingBox().Bottom + 20);
-                    Shape = ShapeFactory.CreateShape(Iterator.Current.GetShapeTypeName());
-                    Shapes.Add(Shape);
-                    _Stream.WriteElementStart(Node);
-                    Iterator.Current.WriteToSerializer(_Stream);
-                    _Stream.WriteElementEnd(Node);
-                    Cmd.AddCmd(new Core.CmdAddShape(GetModel(), Shape, PointA, PointB));
-                    i++;
-                }
-                _Stream.CloseOutputStream();
-                //if (i != 0) GetModel().GetUndoStack().Push(Cmd);
-                _Data.SetData(DataFormats.Text, Cmd.GetText());
-                _Data.SetData(Cmd.GetType(), Cmd);
-                _Data.SetData("stream", MemStream.ToArray());
-                Clipboard.SetDataObject(_Data);
-            } catch (System.Runtime.InteropServices.ExternalException) {
-                MessageBox.Show("The Clipboard could not be accessed. Please try again.");
-            }
+        private void Paste_Click(object sender, EventArgs e) {
         }
-        private void btPasteShape_Click(object sender, EventArgs e) {
-            ToolStripItem contextMenuItem = (ToolStripItem)sender;
-            System.Drawing.Point NewPos, Ctxtpos;
-            if (contextMenuItem.Tag is System.Drawing.Point) {
-                Ctxtpos = (System.Drawing.Point)contextMenuItem.Tag;  //Location is stored as point in tag
-            } else {
-                Ctxtpos = new System.Drawing.Point(0, 0);
-            }
-            System.Drawing.Size PosOffset = System.Drawing.Size.Empty;
-            IDataObject Data = Clipboard.GetDataObject();
-            ShapeInterface Shape = null;
-            Core.CmdMacro Cmd = new Core.CmdMacro();
-            String[] Formats = Data.GetFormats(false);
-            // Determines whether the data is in a format you can use.
-            if (Data.GetDataPresent("stream")) {
-                //string test = Data.GetData(DataFormats.Text).ToString();
-                SerializerXML _Stream = new SerializerXML("JKFLOW", "1.0.0.0");
-                MemoryStream _MemStream = new MemoryStream((byte[])Data.GetData("stream"));
-                _Stream.OpenInputStream(_MemStream);
-                string NodeGroup;
-                int StartNodeLevel = 0, CurrNodeLevel = 0;
-                do {
-                    NodeGroup = _Stream.GetNodeName();
-                    CurrNodeLevel = _Stream.GetNodeLevel();
-                    if (CurrNodeLevel < StartNodeLevel) { break; }
-                    if (_Stream.GetNodeType() != Core.SerializerBase.NodeType.NodeEnd) {
-                        if (NodeGroup == "Shape") {
-                            ShapeInterface SourceShape = ShapeFactory.DeserializeShape(_Stream);
-                            if (PosOffset.IsEmpty) {
-                                PosOffset.Width = Ctxtpos.X - SourceShape.GetBoundingBox().Location.X;
-                                PosOffset.Height = Ctxtpos.Y - SourceShape.GetBoundingBox().Location.Y;
-                            }
-                            NewPos = SourceShape.GetBoundingBox().Location + PosOffset;
-                            Shape = ShapeFactory.CreateShape(SourceShape.GetShapeTypeName());
-                            Cmd.AddCmd(new Core.CmdAddShape(GetModel(),
-                                Shape, NewPos, NewPos + SourceShape.GetBoundingBox().Size));
-                        }
-                    }
-                } while (_Stream.ReadNext());
-                _Stream.CloseInputStream();
-                _Stream = null;
-                GetModel().GetUndoStack().Push(Cmd);
-            }
+        private void Delete_Click(object sender, EventArgs e) {
         }
         private void Save_Click(object sender, EventArgs e) {
             if (GetModel().GetFileName() == "") {
@@ -360,7 +313,7 @@ namespace smartEdit.Core {
             saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             saveFileDialog.Filter = "Textdateien (*.bmp)|*.bmp|Alle Dateien (*.*)|*.*";
             if (saveFileDialog.ShowDialog(/*this*/) == DialogResult.OK) {
-                ExportToFile(saveFileDialog.FileName);
+             //   ExportToFile(saveFileDialog.FileName);
             };
         }
         private void Open_Click(object sender, EventArgs e) {
@@ -375,25 +328,19 @@ namespace smartEdit.Core {
             } finally { }
         }
         private void NewModel_Click(object sender, EventArgs e) {
-            SetActiveModel(new smartEdit.Core.ModelDocument());
+           //todo SetActiveModel(new smartEdit.Core.ModelDocument());
         }
         private void ShowProperties_Click(object sender, EventArgs e) {
-            Core.ElementEnumerator<Core.ShapeInterface> Iterator = GetModel().GetSelectedShapes();
-            List<ShapeInterface> Shapes = new List<ShapeInterface>(0);
             int i = 0;
-            while (Iterator.MoveNext()) {
-                Shapes.Add(Iterator.Current);
-                i++;
-            }
             if (i > 0) {
                 Widgets.FormShapeSettings Editor = new Widgets.FormShapeSettings();
-                Editor.SetObject(Shapes);
+                Editor.SetObject(sender);
                 Editor.Show();
             }
         }
         private void ShowPageProperties_Click(object sender, EventArgs e) {
             Widgets.FormShapeSettings Editor = new Widgets.FormShapeSettings();
-            Editor.SetObject(GetModel().GetPage());
+            Editor.SetObject(sender);
             Editor.Show();
         }
         #endregion
@@ -401,27 +348,17 @@ namespace smartEdit.Core {
         public virtual CmdStackGroup GetCmdStack() { return m_CmdStackGroup; }
         public virtual void OnMouseInput(object sender, MouseInputEventArgs e) {
             if (e.MouseArg.Clicks == 2) {//doubleclick
-                Core.ShapeInterface Shape = GetModel().GetShapeAtPoint(
-                         e.MouseArg.Location, false);
-                if (Shape != null) {
-                    Shape.ShowEditor();
-                };
+
             } else if (e.MouseArg.Clicks == 0) {//MouseHoover 
-                Core.ShapeInterface Shape = GetModel().GetShapeAtPoint(
-                        e.MouseArg.Location, false);
-                /* if (Shape != null)
-                 {
-                     Shape.ShowSizers(true);
-                 };*/
+
             }
         }
-        public virtual void ViewFocusChanged(IView View) { }
-        public virtual void ToolChanged() { }
+        
         #region fields
         protected Core.ModelDocument m_Model = null;
         protected Core.CmdStackGroup m_CmdStackGroup;
+        protected Core.ViewManager m_Views = null;
         #endregion
-
     }
 
 }

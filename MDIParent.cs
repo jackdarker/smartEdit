@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
 using System.Windows.Forms;
+using smartEdit.Core;
 
 namespace smartEdit {
     public partial class MDIParent : Form {
@@ -35,27 +36,28 @@ namespace smartEdit {
           //  Controls.Add( new DockingControl(this,DockStyle.Left,new Widgets.WidgetCodePage()));
 
             tvProjects = new Widgets.WidgetProject();
-            m_Controller = new smartEdit.Core.ControllerDocument();
+            ControllerDocument Controller = ControllerDocument.Instance;
+            Controller.SetTopLevelForm(this);
            /* widgetShapePalette1.SetController(m_Controller);
             widgetDiagramShapeTree1.SetController(m_Controller);
             */;
-            m_Controller.GetCmdStack().EventCanRedoChanged += new EventHandler<smartEdit.Core.CmdStackGroup.BoolEventArgs>(
+              Controller.GetCmdStack().EventCanRedoChanged += new EventHandler<smartEdit.Core.CmdStackGroup.BoolEventArgs>(
                 delegate(object sender, smartEdit.Core.CmdStackGroup.BoolEventArgs e) { btRedo.Enabled = e.State; });
-            m_Controller.GetCmdStack().EventCanUndoChanged += new EventHandler<smartEdit.Core.CmdStackGroup.BoolEventArgs>(
+              Controller.GetCmdStack().EventCanUndoChanged += new EventHandler<smartEdit.Core.CmdStackGroup.BoolEventArgs>(
                 delegate(object sender, smartEdit.Core.CmdStackGroup.BoolEventArgs e) { btUndo.Enabled = e.State; });
-            m_Controller.GetCmdStack().EventUpdate += new EventHandler<EventArgs>(
+              Controller.GetCmdStack().EventUpdate += new EventHandler<EventArgs>(
                 delegate(object sender, EventArgs e) {
-                    btRedo.ToolTipText = m_Controller.GetCmdStack().GetRedoText();
-                    btUndo.ToolTipText = m_Controller.GetCmdStack().GetUndoText();
+                    btRedo.ToolTipText = Controller.GetCmdStack().GetRedoText();
+                    btUndo.ToolTipText = Controller.GetCmdStack().GetUndoText();
                 });
-            btRedo.Click += new EventHandler(m_Controller.GetCmdStack().RedoEvent);
-            btUndo.Click += new EventHandler(m_Controller.GetCmdStack().UndoEvent);
+            btRedo.Click += new EventHandler(Controller.GetCmdStack().RedoEvent);
+            btUndo.Click += new EventHandler(Controller.GetCmdStack().UndoEvent);
             //widgetShapePalette1.EventShapeSelected += new smartEdit.Core.ShapeSelectedEventHandler(m_Controller.OnSetShapeTemplate);
             //widgetShapePalette1.EventToolChanged += new smartEdit.Core.ToolChangedEventHandler(m_Controller.OnToolChanged);
           //  this.widgetShapePalette1.UpdateView();
         }
         private void ShowNewForm(object sender, EventArgs e) {
-            CreateNewDiagram();
+            NewEditor();
         }
         private string GetIniFileName() {
             string File = Application.StartupPath + Application.ProductName + ".cfg";
@@ -64,7 +66,7 @@ namespace smartEdit {
         private void SaveToFile() {
             smartEdit.Core.SerializerXML _stream = null;
             try {
-                _stream = new smartEdit.Core.SerializerXML("JKFLOW-APP", "1.0.0.0");
+                _stream = new smartEdit.Core.SerializerXML("SMARTEDIT-APP", "1.0.0.0");
                 _stream.OpenOutputStream(GetIniFileName());
                 _stream.WriteElementStart("Application");
                 m_AppData.WriteToSerializer(_stream);
@@ -81,9 +83,9 @@ namespace smartEdit {
             string DocType = string.Empty;
             smartEdit.Core.SerializerXML _stream = null;
             try {
-                _stream = new smartEdit.Core.SerializerXML("JKFLOW-APP", "1.0.0.0");
+                _stream = new smartEdit.Core.SerializerXML("SMARTEDIT-APP", "1.0.0.0");
                 _stream.OpenInputStream(GetIniFileName());
-                if (_stream.GetDetectedSerializerName() != "JKFLOW-APP")
+                if (_stream.GetDetectedSerializerName() != "SMARTEDIT-APP")
                     throw new FormatException("");
                 string NodeGroup;
                 do {
@@ -104,20 +106,20 @@ namespace smartEdit {
                 if (_stream != null) _stream.CloseInputStream();
             }
         }
-        public void CreateNewDiagram() {
+        public VwCode NewEditor() {
             VwCode childForm = new VwCode();
-
-            childForm.SetController(GetActiveController());
+            childForm.SetController(ControllerDocument.Instance);  //do we need this?
             childForm.MdiParent = this;
             childForm.Text = "Fenster " + childFormNumber++;
             childForm.WindowState = FormWindowState.Maximized;
             childForm.Show();
             childForm.Activated += new EventHandler(childForm_Activated);
             this.ActivateMdiChild(childForm);
+            return childForm;
         }
-        public Core.ControllerDocument GetActiveController() { return m_Controller; }
+
         void childForm_Activated(object sender, EventArgs e) {
-            GetActiveController().ViewFocusChanged((VwDiagram)ActiveMdiChild);
+            ControllerDocument.Instance.ViewFocusChanged((VwCode)ActiveMdiChild);
         }
         /* private void OpenFile(object sender, EventArgs e)
          {
@@ -165,7 +167,6 @@ namespace smartEdit {
             this.Location = m_AppData.m_WndRectangle.Location;
             this.Size = m_AppData.m_WndRectangle.Size;
             this.WindowState = (m_AppData.m_FullScreen == 1) ? FormWindowState.Maximized : FormWindowState.Normal;
-            CreateNewDiagram();
         }
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
 
@@ -212,14 +213,13 @@ namespace smartEdit {
         #region field
         private AppData m_AppData;
         private int childFormNumber = 0;
-        private Core.ControllerDocument m_Controller;
         #endregion
 
         private void Menu_DropDownOpening(object sender, EventArgs e) {
             ToolStripMenuItem Menu = (ToolStripMenuItem)sender;
             Menu.DropDownItems.Clear();
             if (ActiveMdiChild is smartEdit.Core.IView) {
-                Menu.DropDownItems.AddRange(m_Controller.GetViewMenuStrip((smartEdit.Core.IView)ActiveMdiChild, Menu));
+                Menu.DropDownItems.AddRange(ControllerDocument.Instance.GetViewMenuStrip((smartEdit.Core.IView)ActiveMdiChild, Menu));
             }
         }
 

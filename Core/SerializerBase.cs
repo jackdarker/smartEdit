@@ -389,24 +389,14 @@ namespace smartEdit.Core {
         }
         public override void OpenOutputStream() {
         }
-        public void OpenOutputStream(ModelDiagram Model, string FileName, Rectangle PageSize) {
+        public void OpenOutputStream(ModelDocument Model, string FileName, Rectangle PageSize) {
             m_Model = Model;
             m_BMP = new Bitmap(PageSize.Width, PageSize.Height);
             m_Graphic = Graphics.FromImage(m_BMP);
             m_Stream = new FileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.None);
-            DrawShapes();
+
         }
-        private void DrawShapes() {
-            if (m_Model == null) return;
-            ShapeDrawingContext Context = new ShapeDrawingContext();
-            Context.SetScale(1);
-            ElementEnumerator<ShapeInterface> Iterator = m_Model.GetShapeEnumerator();
-            //fill background
-            m_Graphic.FillRectangle(Brushes.White, m_Graphic.ClipBounds);
-            while (Iterator.MoveNext()) {
-                Iterator.Current.Draw(m_Graphic, Context);
-            }
-        }
+
         public override void CloseOutputStream() {
             m_BMP.Save(m_Stream, System.Drawing.Imaging.ImageFormat.Bmp);
             /*?? if (m_Writer != null)
@@ -418,7 +408,7 @@ namespace smartEdit.Core {
             //m_Graphic.Dispose();
             m_Stream.Dispose();
         }
-        ModelDiagram m_Model = null;
+        ModelDocument m_Model = null;
         Bitmap m_BMP = null;
         Graphics m_Graphic = null;
         Stream m_Stream = null;

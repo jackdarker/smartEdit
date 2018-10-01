@@ -24,7 +24,7 @@
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VwDiagram));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VwCode));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -39,7 +39,7 @@
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.widgetDiagramPage1 = new smartEdit.Widgets.WidgetCodePage();
+            this.widgetCode = new smartEdit.Widgets.WidgetCodePage();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,7 +63,7 @@
             this.fileMenu.ImageTransparentColor = System.Drawing.SystemColors.ActiveBorder;
             this.fileMenu.MergeAction = System.Windows.Forms.MergeAction.MatchOnly;
             this.fileMenu.Name = "fileMenu";
-            this.fileMenu.Size = new System.Drawing.Size(44, 20);
+            this.fileMenu.Size = new System.Drawing.Size(46, 20);
             this.fileMenu.Text = "&Datei";
             // 
             // toolStripSeparator2
@@ -90,7 +90,7 @@
             this.toolStripSeparator1});
             this.editMenu.MergeAction = System.Windows.Forms.MergeAction.Replace;
             this.editMenu.Name = "editMenu";
-            this.editMenu.Size = new System.Drawing.Size(71, 20);
+            this.editMenu.Size = new System.Drawing.Size(75, 20);
             this.editMenu.Text = "&Bearbeiten";
             // 
             // undoToolStripMenuItem
@@ -99,7 +99,7 @@
             this.undoToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
             this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
             this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.undoToolStripMenuItem.Text = "&Rückgängig";
             // 
             // redoToolStripMenuItem
@@ -108,23 +108,23 @@
             this.redoToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
             this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
             this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-            this.redoToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.redoToolStripMenuItem.Text = "&Wiederholen";
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(184, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(194, 6);
             // 
             // cutToolStripMenuItem
             // 
             this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
-            this.cutToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.cutToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             // 
             // pasteToolStripMenuItem
             // 
@@ -132,47 +132,47 @@
             this.pasteToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
             this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.pasteToolStripMenuItem.Text = "&Einfügen";
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(184, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(194, 6);
             // 
             // selectAllToolStripMenuItem
             // 
             this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
             this.selectAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.selectAllToolStripMenuItem.Text = "&Alle auswählen";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(184, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(194, 6);
             // 
-            // widgetDiagramPage1
+            // widgetCode
             // 
-            this.widgetDiagramPage1.AutoScroll = true;
-            this.widgetDiagramPage1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.widgetDiagramPage1.Location = new System.Drawing.Point(0, 0);
-            this.widgetDiagramPage1.Name = "widgetDiagramPage1";
-            this.widgetDiagramPage1.Size = new System.Drawing.Size(644, 540);
-            this.widgetDiagramPage1.TabIndex = 2;
+            this.widgetCode.AutoScroll = true;
+            this.widgetCode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.widgetCode.Location = new System.Drawing.Point(0, 0);
+            this.widgetCode.Name = "widgetCode";
+            this.widgetCode.Size = new System.Drawing.Size(644, 540);
+            this.widgetCode.TabIndex = 2;
             // 
-            // VwDiagram
+            // VwCode
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(644, 540);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.widgetDiagramPage1);
+            this.Controls.Add(this.widgetCode);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "VwDiagram";
+            this.Name = "VwCode";
             this.Text = "Form3";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DBQuery_FormClosed);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DBQuery_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DBQuery_FormClosed);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -194,7 +194,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private smartEdit.Widgets.WidgetCodePage widgetDiagramPage1;
+        private smartEdit.Widgets.WidgetCodePage widgetCode;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem ExportAsMenuItem;
     }

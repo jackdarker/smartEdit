@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Development Tools</title>
+</head>
+<body>
+    <h1>Undo & Redo</h1>
+    <hr />
+   
+    <div class="mermaid">
+        graph TB
+        ExploreStateMachine-->LoadBattleScene
+        subgraph BattleStateMachine
+        LoadBattleScene-->NextWave
+        NextWave-->|Done|BattleVictory
+        end
+        
+        end
+
+    </div>
+    <hr />
+    <h2>Undo & Redo capability</h2>
+    <p>Editors should support Undo/Redo:</p>
+    <ul>
+        <li>editing text</li>
+        <li>adding/removing/moving files</li>
+    </ul>
+
+    <h2>Commands</h2>
+    <p>Every operation is wrapped into a command. The command is pushed to a command stack.</p>
+    
+    <h2>Commandstack</h2>
+    <p>The stack keeps track of a command's undo/redo state. A command is executed when pushed to a stack.</p>
+    <p>The command stack is connected by events to UI for update ("canUndo") and triggers ("Undo").</p>
+    <p>When a view gets activated, its commandstack will be set to be the active one. There is one command stack per Editor&Document.</p>
+    
+    <script src="../js/mermaid.min.js"></script>
+    <script>mermaid.initialize({ startOnLoad: true });</script>
+</body>
+</html>

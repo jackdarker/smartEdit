@@ -246,7 +246,7 @@ namespace smartEdit.Tag
             if (lang != Language.Other && !_BaseLibraryCache.ContainsKey(lang))
             {
                 _BaseLibraryCache[lang] = new List<string>();
-                string tagFile = Path.Combine(Config.Instance.TagDir, lang.ToString());
+                string tagFile = "";//?? Path.Combine(Config.Instance.TagDir, lang.ToString());
                 if (File.Exists(tagFile))
                 {
                     _BaseLibraryCache[lang].AddRange(File.ReadAllLines(tagFile));

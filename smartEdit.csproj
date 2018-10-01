@@ -76,32 +76,20 @@
     <Compile Include="Cmds\CmdOpenFile.cs" />
     <Compile Include="Core\CmdBase.cs" />
     <Compile Include="Core\CmdStack.cs" />
-    <Compile Include="Core\Collider2D.cs" />
-    <Compile Include="Core\ConnectorBase.cs" />
     <Compile Include="Core\ControllerDocument.cs" />
-    <Compile Include="Core\InterfaceDiagram.cs" />
-    <Compile Include="Core\InterfaceShape.cs" />
     <Compile Include="Core\InterfaceWidget.cs" />
     <Compile Include="Core\JKFlowCore.cs" />
     <Compile Include="Core\Log.cs" />
-    <Compile Include="Core\ModelDiagram.cs" />
     <Compile Include="Core\ModelDocument.cs" />
-    <Compile Include="Core\Page.cs" />
     <Compile Include="Core\Parser2.cs" />
     <Compile Include="Core\ParserNode.cs" />
     <Compile Include="Core\Project.cs" />
     <Compile Include="Core\Tokenizer.cs" />
+    <Compile Include="Core\ViewManager.cs" />
     <Compile Include="Jump.cs" />
     <Compile Include="ResourceManager.cs" />
     <Compile Include="Core\Serializable.cs" />
     <Compile Include="Core\SerializerBase.cs" />
-    <Compile Include="Core\ShapeBase.cs">
-    </Compile>
-    <Compile Include="Core\ShapeCmds.cs" />
-    <Compile Include="Core\ShapeCollection.cs" />
-    <Compile Include="Core\ShapeHandleBase.cs" />
-    <Compile Include="Core\ShapeLibrary.cs" />
-    <Compile Include="Core\WidgetDiagramCanvasState.cs" />
     <Compile Include="DBBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -142,13 +130,6 @@
     <Compile Include="PropertyBrowser\WidgetPropertyBrowser.Designer.cs">
       <DependentUpon>WidgetPropertyBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Shapes\ShText.cs" />
-    <Compile Include="VwDiagram.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="VwDiagram.Designer.cs">
-      <DependentUpon>VwDiagram.cs</DependentUpon>
-    </Compile>
     <Compile Include="MDIParent.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -175,10 +156,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PropertyBrowser\WidgetPropertyBrowser.resx">
       <DependentUpon>WidgetPropertyBrowser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VwDiagram.resx">
-      <DependentUpon>VwDiagram.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="MDIParent.resx">
       <DependentUpon>MDIParent.cs</DependentUpon>
@@ -207,20 +184,8 @@
     <EmbeddedResource Include="Widgets\WidgetCodePage.resx">
       <DependentUpon>WidgetCodePage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Widgets\WidgetDiagramCanvas.resx">
-      <DependentUpon>WidgetDiagramCanvas.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Widgets\WidgetDiagramPage.resx">
-      <DependentUpon>WidgetDiagramPage.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Widgets\WidgetShapePalette.resx">
-      <DependentUpon>WidgetShapePalette.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Widgets\FormShapeSettings.resx">
       <DependentUpon>FormShapeSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Widgets\WidgetDiagramShapeTree.resx">
-      <DependentUpon>WidgetDiagramShapeTree.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Widgets\WidgetUndoRedo.resx">
       <DependentUpon>WidgetUndoRedo.cs</DependentUpon>
@@ -274,35 +239,11 @@
     <Compile Include="Widgets\WidgetCodePage.Designer.cs">
       <DependentUpon>WidgetCodePage.cs</DependentUpon>
     </Compile>
-    <Compile Include="Widgets\WidgetDiagramCanvas.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Widgets\WidgetDiagramCanvas.Designer.cs">
-      <DependentUpon>WidgetDiagramCanvas.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Widgets\WidgetDiagramPage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Widgets\WidgetDiagramPage.Designer.cs">
-      <DependentUpon>WidgetDiagramPage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Widgets\WidgetShapePalette.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Widgets\WidgetShapePalette.Designer.cs">
-      <DependentUpon>WidgetShapePalette.cs</DependentUpon>
-    </Compile>
     <Compile Include="Widgets\FormShapeSettings.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Widgets\FormShapeSettings.Designer.cs">
       <DependentUpon>FormShapeSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Widgets\WidgetDiagramShapeTree.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Widgets\WidgetDiagramShapeTree.Designer.cs">
-      <DependentUpon>WidgetDiagramShapeTree.cs</DependentUpon>
     </Compile>
     <Compile Include="Widgets\WidgetUndoRedo.cs">
       <SubType>UserControl</SubType>

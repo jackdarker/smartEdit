@@ -6,7 +6,6 @@ using System.Windows.Forms;
 namespace smartEdit.Core {
 
     public delegate void ToolSelectedEventHandler(object sender, MouseOperation Tool);
-    public delegate void ShapeSelectedEventHandler(object sender, Core.ShapeInterface ShapeBase);
     public delegate void UpdateEventHandler(object sender, EventArgs e);
     public delegate void MouseInputEventHandler(object sender, MouseInputEventArgs e);
     public delegate void MouseFeedbackEventHandler(object sender, MouseOperation e);
@@ -14,9 +13,9 @@ namespace smartEdit.Core {
     /// Interface for the Controller
     /// </summary>
     public interface IController {
-        void OnShapeSelected(object sender, ShapeInterface Shape);
         void OnToolChanged(object sender, smartEdit.Core.MouseOperation Tool);
         void OnMouseInput(object sender, MouseInputEventArgs e);
+        CmdStackGroup GetCmdStack();
     }
     /// <summary>
     /// Basic-Interface for Views that interoperate with Controller
@@ -24,17 +23,14 @@ namespace smartEdit.Core {
     public interface IView {
         /// <summary>
         /// Attaches View to new Controller
-        /// </summary>
-        /// <param name="Ctrl"></param>
         void SetController(Core.ControllerDocument Ctrl);
         void OnUpdateEvent(object sender, EventArgs e);
+        CmdStack GetCmdStack();
     }
     /// <summary>
     /// Basic-Interface for Views that visualize model data with standard controlls like buttons, Listboxes, Combos...
     /// </summary>
     public interface IDataView : IView {
-        void RegisterShapeSelected(ControllerDocument Listener);
-        void UnregisterShapeSelected(ControllerDocument Listener);
         void OnToolChanged(object sender, smartEdit.Core.MouseOperation Op);
     }
     /// <summary>
@@ -49,8 +45,6 @@ namespace smartEdit.Core {
     /// Basic-Interface for widgets that visualize operating tools and library
     /// </summary>
     public interface IToolView : IView {
-        void RegisterShapeSelected(ControllerDocument Listener);
-        void UnregisterShapeSelected(ControllerDocument Listener);
         void RegisterToolSelected(ControllerDocument Listener);
         void UnregisterToolSelected(ControllerDocument Listener);
     }

@@ -92,7 +92,7 @@ namespace smartEdit {
             if (sender == null) return;
 
             if (e.ClickedItem.Equals(OpenView)) {
-                ((MDIParent)this.ParentForm).CreateNewDiagram();
+                ((MDIParent)this.ParentForm).NewEditor();
                 return;
             }
 

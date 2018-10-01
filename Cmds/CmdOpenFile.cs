@@ -6,23 +6,21 @@ using smartEdit.Core;
 namespace smartEdit.Cmds {
     //Opens a file in the editor.
     public class CmdOpenFile : CmdBase {
-        public CmdOpenFile(ModelDocument Project, String Filename)
+        public CmdOpenFile(String Filename)
             : base(null) {
-                SetContext(Project, Filename);
+                SetContext(Filename);
         }
 
         public override void Undo() {
 
         }
         public override void Redo() {
-
+            ControllerDocument.Instance.OpenEditorForFile(m_FilePath);
         }
-        private void SetContext(ModelDocument Project, String Filename) {
-            m_Project = Project;
+        private void SetContext( String Filename) {
             m_FilePath = Filename;
-            SetText("Edit " + Filename);
+            SetText("Open " + Filename);
         }
-        ModelDocument m_Project;
         String m_FilePath;
     }
 }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
+using smartEdit.Core;
 using smartEdit;
 
 namespace smartEdit.Widgets
@@ -442,7 +443,7 @@ namespace smartEdit.Widgets
             }
         }
 
-        #region 右键菜单事件
+        #region RightClickMenuEvent
 
         /// <summary>
         /// 自定义命令工具
@@ -834,7 +835,7 @@ namespace smartEdit.Widgets
         #endregion
 
         /// <summary>
-        /// 双击文件时，在npp中打开
+        /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -850,7 +851,7 @@ namespace smartEdit.Widgets
             {
                 if (!File.Exists(item.AbsPath))
                 {
-                    if (MessageBox.Show(string.Format(" '{0}' does't exist, create it?", item.Name), "Notepad++ Project", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                    if (MessageBox.Show(string.Format(" '{0}' does't exist, create it?", item.Name), "Project", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                     {
                         string dir = Path.GetDirectoryName(item.AbsPath);
                         if (!Directory.Exists(dir))
@@ -858,7 +859,7 @@ namespace smartEdit.Widgets
                         File.Create(item.AbsPath).Close();
                         if (!Utility.TryApplyTemplate("", item.AbsPath, item.Project))
                             File.Create(item.AbsPath).Close();
-                      //  NPP.OpenFile(item.AbsPath);
+                     
                     }
                     else  // delete this node
                     {
@@ -866,12 +867,11 @@ namespace smartEdit.Widgets
                         item.Parent.RemoveChild(item);
                         proj.Save();
                         tvProj.Nodes.Remove(tvProj.SelectedNode);
+                        return;
                     }
                 }
-                else
-                {
-                  //  NPP.OpenFile(item.AbsPath);
-                }
+                  CmdBase _Cmd= new Cmds.CmdOpenFile(item.AbsPath);
+                  _Cmd.Redo();
             }
         }
 

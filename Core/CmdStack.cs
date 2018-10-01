@@ -134,7 +134,7 @@ namespace smartEdit.Core {
 
     /// <summary>
     /// Manages several CmdStack. 
-    /// Mainly used for MDI application where you want to use one Stack for each document.
+    /// Mainly used for MDI application where you want to use one Stack for each document/view.
     /// </summary>
     public class CmdStackGroup : CmdStack {
         public CmdStackGroup() {

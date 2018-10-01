@@ -154,7 +154,6 @@
             this.DoubleBuffered = true;
             this.Name = "WidgetCodePage";
             this.Size = new System.Drawing.Size(480, 356);
-            this.Click += new System.EventHandler(this.WidgetDiagramPage_Click);
             this.toolStripContainer1.BottomToolStripPanel.ResumeLayout(false);
             this.toolStripContainer1.BottomToolStripPanel.PerformLayout();
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);

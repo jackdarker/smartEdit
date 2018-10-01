@@ -48,7 +48,7 @@ namespace smartEdit
             if (!System.IO.File.Exists(file))
                 return;
             
-            Jump oldPos = new Jump(/*NPP.GetCurrentWord2(), NPP.GetCurrentFile(), NPP.GetCurrentLine(), NPP.GetCurrentPosition()*/);
+            Jump oldPos = new Jump("","",0,0/*NPP.GetCurrentWord2(), NPP.GetCurrentFile(), NPP.GetCurrentLine(), NPP.GetCurrentPosition()*/);
             if (oldPos.Info == "")
                 oldPos.Info = string.Format("line-{0}", oldPos.LineNo + 1);
 
