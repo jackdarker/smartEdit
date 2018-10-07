@@ -1,6 +1,7 @@
 #include "StandardObj.seq"
 #include "helpers\sub.seq"
 int iX=5;
+int iY;
 double ytet;
 double xTet
 bool Return

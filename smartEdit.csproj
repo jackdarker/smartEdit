@@ -32,7 +32,8 @@
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,6 +43,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -85,6 +87,7 @@
     <Compile Include="Core\ParserNode.cs" />
     <Compile Include="Core\Project.cs" />
     <Compile Include="Core\Tokenizer.cs" />
+    <Compile Include="Core\ViewData.cs" />
     <Compile Include="Core\ViewManager.cs" />
     <Compile Include="Jump.cs" />
     <Compile Include="ResourceManager.cs" />
@@ -166,14 +169,11 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Widgets\Component1.resx">
-      <DependentUpon>Component1.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Widgets\DockingControl.resx">
       <DependentUpon>DockingControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Widgets\frmTagList.resx">
-      <DependentUpon>frmTagList.cs</DependentUpon>
+    <EmbeddedResource Include="Widgets\WidgetClassView.resx">
+      <DependentUpon>WidgetClassView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Widgets\WidgetLogList.resx">
       <DependentUpon>WidgetLogList.cs</DependentUpon>
@@ -206,20 +206,20 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="Widgets\Component1.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Widgets\Component1.Designer.cs">
-      <DependentUpon>Component1.cs</DependentUpon>
-    </Compile>
     <Compile Include="Widgets\DockingControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Widgets\frmTagList.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Widgets\WidgetClassView.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Widgets\frmTagList.designer.cs">
-      <DependentUpon>frmTagList.cs</DependentUpon>
+    <Compile Include="Widgets\WidgetClassView.designer.cs">
+      <DependentUpon>WidgetClassView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Widgets\TabCtlEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Widgets\TabPage.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Widgets\WidgetLogList.cs">
       <SubType>UserControl</SubType>

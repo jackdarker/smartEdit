@@ -27,6 +27,12 @@ namespace smartEdit.Core {
             //m_CmdStackGroup.EventUpdate += new EventHandler<EventArgs>(OnUpdate);
           //  SetActiveModel(new smartEdit.Core.ModelDocument());
         }
+        private IView m_ActiveView = null;
+
+        public IView GetActiveView() {
+            return m_ActiveView;
+        }
+
         #region Event & Delegates
 
         /*public event EventHandler<smartEdit.Core.CmdStackGroup.BoolEventArgs> EventCanRedoChanged;
@@ -56,20 +62,23 @@ namespace smartEdit.Core {
                 handler(sender, e);
             }
         }
-        public event ToolSelectedEventHandler EventToolChanged;
-        public virtual void OnToolChanged(object sender, smartEdit.Core.MouseOperation Tool) {
-            ToolSelectedEventHandler handler = EventToolChanged;
-            if (handler != null) {
-                handler(sender, Tool);
-            }
-        }
+
         public event MouseFeedbackEventHandler EventMouseFeedback;
         public virtual void OnMouseInput(object sender, smartEdit.Core.MouseOperation e) {
             MouseFeedbackEventHandler handler = EventMouseFeedback;
             if (handler != null) handler(sender, e);
 
         }
-        public virtual void ViewFocusChanged(IView View) { }
+        
+        public event ViewChangedEventHandler EventViewChanged;
+        public virtual void OnViewChanged(object sender, IView View) {
+            m_ActiveView = View;
+            ViewChangedEventHandler handler = EventViewChanged;
+            if (handler != null) {
+                handler(sender, View);
+            }
+        }
+
         public virtual void ToolChanged() { }
         #endregion
         #region Save/Load
@@ -77,10 +86,12 @@ namespace smartEdit.Core {
             SetActiveModel(ModelDocument.CreateFromFile(FileName));
         }
         public virtual void SaveToFile(string FileName) {
-            GetModel().SaveToFile(FileName);
+            if(GetModel()!= null)
+                GetModel().SaveToFile(FileName);
         }
         public virtual void SaveToFile() {
-            GetModel().SaveToFile();
+            if (GetModel() != null)
+                GetModel().SaveToFile();
         }
 
         #endregion
@@ -115,7 +126,6 @@ namespace smartEdit.Core {
         public virtual void RegisterView(IDataView View) {
             //View.RegisterShapeSelected(this);
             EventUpdate += View.OnUpdateEvent;
-            EventToolChanged += new smartEdit.Core.ToolSelectedEventHandler(View.OnToolChanged);
             GetCmdStack().EventUpdate += View.OnUpdateEvent;
             FireUpdateEvent(this, new EventArgs());
         }

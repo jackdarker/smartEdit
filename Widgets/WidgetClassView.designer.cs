@@ -1,6 +1,6 @@
 ﻿namespace smartEdit.Widgets
 {
-    partial class frmTagList
+    partial class WidgetClassView
     {
         /// <summary>
         /// Required designer variable.
@@ -64,7 +64,7 @@
             // tbtnSearch
             // 
             this.tbtnSearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-//            this.tbtnSearch.Image = global::NppProject.Properties.Resources.Search;
+            this.tbtnSearch.Image = global::smartEdit.Properties.Resources.Search;
             this.tbtnSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tbtnSearch.Name = "tbtnSearch";
             this.tbtnSearch.Size = new System.Drawing.Size(23, 22);
@@ -74,7 +74,7 @@
             // tbtnPrev
             // 
             this.tbtnPrev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-//            this.tbtnPrev.Image = global::NppProject.Properties.Resources.Prev;
+            this.tbtnPrev.Image = global::smartEdit.Properties.Resources.Prev;
             this.tbtnPrev.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tbtnPrev.Name = "tbtnPrev";
             this.tbtnPrev.Size = new System.Drawing.Size(23, 22);
@@ -84,7 +84,7 @@
             // tbtnNext
             // 
             this.tbtnNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
- //           this.tbtnNext.Image = global::NppProject.Properties.Resources.Next;
+            this.tbtnNext.Image = global::smartEdit.Properties.Resources.Next;
             this.tbtnNext.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tbtnNext.Name = "tbtnNext";
             this.tbtnNext.Size = new System.Drawing.Size(23, 22);
@@ -94,7 +94,7 @@
             // tbtnRefresh
             // 
             this.tbtnRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
- //           this.tbtnRefresh.Image = global::NppProject.Properties.Resources.Refresh;
+            this.tbtnRefresh.Image = global::smartEdit.Properties.Resources.Refresh;
             this.tbtnRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tbtnRefresh.Name = "tbtnRefresh";
             this.tbtnRefresh.Size = new System.Drawing.Size(23, 22);
@@ -107,20 +107,19 @@
             this.tvClassView.Location = new System.Drawing.Point(0, 25);
             this.tvClassView.Name = "tvClassView";
             this.tvClassView.ShowNodeToolTips = true;
-            this.tvClassView.Size = new System.Drawing.Size(221, 372);
+            this.tvClassView.Size = new System.Drawing.Size(221, 405);
             this.tvClassView.TabIndex = 1;
             this.tvClassView.DoubleClick += new System.EventHandler(this.tvClassView_DoubleClick);
             this.tvClassView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tvClassView_KeyDown);
             // 
-            // frmTagList
+            // WidgetClassView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(221, 397);
             this.Controls.Add(this.tvClassView);
             this.Controls.Add(this.tbar);
-            this.Name = "frmTagList";
-            this.Text = "frmTagList";
+            this.Name = "WidgetClassView";
+            this.Size = new System.Drawing.Size(221, 430);
             this.tbar.ResumeLayout(false);
             this.tbar.PerformLayout();
             this.ResumeLayout(false);

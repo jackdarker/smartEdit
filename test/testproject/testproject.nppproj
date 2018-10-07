@@ -1,8 +1,8 @@
 <project author="">
-  <node name="testproject" isDir="True" isExpand="False">
-    <node name="Projects" isDir="True" isExpand="False">
-      <node name="ZBF" isDir="True" isExpand="False">
-        <node name="Sequences" isDir="True" isExpand="False">
+  <node name="testproject" isDir="True" isExpand="True">
+    <node name="Projects" isDir="True" isExpand="True">
+      <node name="ZBF" isDir="True" isExpand="True">
+        <node name="Sequences" isDir="True" isExpand="True">
           <node name="helpers" isDir="True" isExpand="False">
             <node name="sub.seq" isDir="False" isExpand="False" />
           </node>

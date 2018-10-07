@@ -8,15 +8,14 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading;
 using smartEdit;
+using smartEdit.Core;
 using smartEdit.Tag;
 
 namespace smartEdit.Widgets
 {
-    public partial class frmTagList : Form
+    public partial class WidgetClassView : UserControl
     {
-        /// <summary>
-        /// 为ClassView中所有结点创建索引
-        /// </summary>
+
         class ClassViewIndex
         {
             public ClassViewIndex(Dictionary<string, TreeNode> tagFullName, Dictionary<string, List<TreeNode>> fileName)
@@ -125,25 +124,17 @@ namespace smartEdit.Widgets
       //  delegate void UpdateClassViewDelegate(CacheUpdatedArgs e);
       //  UpdateClassViewDelegate _updateClassView;
 
-        public frmTagList()
+        public WidgetClassView()
         {
             InitializeComponent();
             tvClassView.ImageList = ResourceManager.Instance.ClassViewImgList;
-          //  _updateClassView = new UpdateClassViewDelegate(_TagCache_CacheUpdated);
-          //  TagCache.CacheUpdated += new CacheUpdated(TagCache_CacheUpdated);
-
-            // 窗口初始化的时候，从内容中加载所有的标签。
-            // 以后标签的更改，通过事件回调来修改
+            smartEdit.Core.ControllerDocument.Instance.EventViewChanged+=new Core.ViewChangedEventHandler(EventViewChanged);
             _LoadClassView();
         }
 
-      /*  void TagCache_CacheUpdated(CacheUpdatedArgs e)
-        {
-            while (!this.IsHandleCreated)
-                Thread.Sleep(1);
-
-            this.Invoke(_updateClassView, new object[] { e });
-        }*/
+        private void EventViewChanged(object sender, IView View) {
+            RefreshClassView();
+        }
 
         /// <summary>
         ///  标签有更改时更新界面
@@ -177,13 +168,61 @@ namespace smartEdit.Widgets
                 _InsertTags(root, TagCache.GetTags(e.File));
             }
         }*/
+        /// <summary>
+        /// Update tree for current active document
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="tags"></param>
+        void _InsertTags(TreeNode root, List<ITag> tags) {
+            IView _View = ControllerDocument.Instance.GetActiveView();
+            if (_View == null || _View.GetViewData()==null) return;
 
+            string _Scope = _View.GetViewData().File; 
+            Project proj = ProjectManager.GetProjectByItsFile(_Scope);
+            if (proj == null)
+                return;
+            ModelDocument _Model = proj.Model;
+            _Scope = _Model.GetRelativePath(_Scope);
+            TreeNode parent = new TreeNode(_Scope);
+            _InsertTagsSub(parent, _Scope, _Model);
+            tvClassView.Nodes.Clear();
+            tvClassView.Nodes.Add(parent);
+            tvClassView.ExpandAll();
+        }
+        void _InsertTagsSub(TreeNode parent, String _Scope, ModelDocument _Model) {
+            List<Obj>.Enumerator _Objs = _Model.GetObjects(_Scope).GetEnumerator();
+            parent.BeginEdit();
+            while (_Objs.MoveNext()) {
+                TreeNode node = new TreeNode();
+                node.Text = _Objs.Current.ClassID() + " " + _Objs.Current.Name();
+                node.Tag = _Objs.Current;
+                node.ImageIndex = node.SelectedImageIndex =
+                    (_Scope == _Objs.Current.Scope()) ? ResourceManager.ClassViewIcon_Cpp_Variable : ResourceManager.ClassViewIcon_ASM_Type;
+                node.ToolTipText = _Objs.Current.Description();
+                parent.Nodes.Add(node);
+                //Recursiv für jedes Object prüfen ob Subdeclaration vorhanden (Sequenz & lvclass)
+                //Todo falls versehentlich recursion in den seq ist hängen wir hier fest
+                /* if (_Scope != _Objs.Current.ClassID())
+                     _InsertTagsSub(node, (_Objs.Current.ClassID()), _Model);*/
+            }
+            List<ObjDecl>.Enumerator _ObjsDecl = _Model.GetFunctions(_Scope).GetEnumerator();
+            while (_ObjsDecl.MoveNext()) {
+                TreeNode node = new TreeNode();
+                node.Text = _ObjsDecl.Current.Function();
+                node.Tag = _ObjsDecl.Current;
+                node.ImageIndex = node.SelectedImageIndex =
+                    (_Scope == _ObjsDecl.Current.ClassID()) ? ResourceManager.ClassViewIcon_Cpp_Function : ResourceManager.ClassViewIcon_ASM_Macro;
+                node.ToolTipText = _ObjsDecl.Current.Description();
+                parent.Nodes.Add(node);
+            }
+            parent.EndEdit(false);
+        }
         /// <summary>
         /// 将标签添加到浏览树
         /// </summary>
         /// <param name="root"></param>
         /// <param name="tags"></param>
-        void _InsertTags(TreeNode root, List<ITag> tags)
+        void _InsertTags2(TreeNode root, List<ITag> tags)
         {
             if (tags.Count == 0)
                 return;
@@ -274,36 +313,7 @@ namespace smartEdit.Widgets
                         parent = index.CppGlobalVar;
                     }
                     #region C与C++共用一些结点
-                    //else if (tag.Lang == Language.C && tag.TagType == TagType.C_Macro && string.IsNullOrEmpty(tag.BelongTo))
-                    //{
-                    //    if (index.CMacroNode == null)
-                    //    {
-                    //        index.CMacroNode = new TreeNode("Macro", ResourceManager.ClassViewIcon_C_Macro, ResourceManager.ClassViewIcon_C_Macro);
-                    //        index.CMacroNode.Tag = "CMacroNode";
-                    //        root.Nodes.Insert(0, index.CMacroNode);
-                    //    }
-                    //    parent = index.CMacroNode;
-                    //}
-                    //else if (tag.Lang == Language.C && tag.TagType == TagType.C_Typedef && string.IsNullOrEmpty(tag.BelongTo))
-                    //{
-                    //    if (index.CTypedefNode == null)
-                    //    {
-                    //        index.CTypedefNode = new TreeNode("Typedef", ResourceManager.ClassViewIcon_C_Typedef, ResourceManager.ClassViewIcon_C_Typedef);
-                    //        index.CTypedefNode.Tag = "CTypedefNode";
-                    //        root.Nodes.Insert(0, index.CTypedefNode);
-                    //    }
-                    //    parent = index.CTypedefNode;
-                    //}
-                    //else if (tag.Lang == Language.C && tag.TagType == TagType.C_Variable && string.IsNullOrEmpty(tag.BelongTo))
-                    //{
-                    //    if (index.CGlobalVarNode == null)
-                    //    {
-                    //        index.CGlobalVarNode = new TreeNode("Global Variable", ResourceManager.ClassViewIcon_C_Variable, ResourceManager.ClassViewIcon_C_Variable);
-                    //        index.CGlobalVarNode.Tag = "CGlobalVarNode";
-                    //        root.Nodes.Insert(0, index.CGlobalVarNode);
-                    //    }
-                    //    parent = index.CGlobalVarNode;
-                    //}
+                    
                     #endregion
                     else if (tag.Lang == Language.JavaScript)
                     {

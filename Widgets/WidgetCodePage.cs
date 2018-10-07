@@ -46,6 +46,12 @@ namespace smartEdit.Widgets {
             if (_parent != null) return _parent.GetCmdStack();
             return null;
         }
+        public virtual ToolStrip GetToolbar() {
+            return null;
+        }
+        public virtual ViewData GetViewData() {
+            return null;
+        }
         private void OnTextChanged(object sender, EventArgs e) {
 
         }
@@ -208,6 +214,9 @@ namespace smartEdit.Widgets {
                // FileName.Text = Path.GetFileName(path);
                 TextArea.Text = File.ReadAllText(path);
             }
+        }
+        public void SaveFile(String path) {
+            File.WriteAllText(path,TextArea.Text,Encoding.ASCII);
         }
 
         public Core.ControllerDocument GetController() { return m_Controller; }

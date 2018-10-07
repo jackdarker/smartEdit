@@ -10,34 +10,32 @@ using smartEdit.Core;
 
 namespace smartEdit {
     public partial class VwCode : Form, Core.IDataView {
-        [Serializable]
-        public class VwData {
-            private string m_File;
-            public string File {
-                get {
-                    return m_File;
-                }
-                set {
-                    m_File = value;
-                    Modified = true;
-                }
-            }
 
-            [NonSerialized]
-            public bool Modified;
-        }
-
-        private VwData m_Data = new VwData();
+        private ViewData m_Data = new ViewData();
 
         public VwCode() {
             InitializeComponent();
-
+            toolStrip.Visible = false; //toolstrip is merged in MDIParent
         }
-
+        public virtual ViewData GetViewData() {
+            return m_Data;
+        }
         public void LoadFile(String File) {
             this.m_Data.File = File;
             this.Text = File;
             this.widgetCode.LoadFile(File);
+        }
+        public void SaveFile(String File) {
+            if (File != String.Empty) {
+                this.m_Data.File = File;
+                this.Text = File;
+            }
+            if (this.m_Data.File != String.Empty) {
+                this.widgetCode.SaveFile(this.m_Data.File);
+            }
+        }
+        public virtual ToolStrip GetToolbar() {
+            return this.toolStrip;
         }
         CmdStack m_CmdStack = new CmdStack();
         public virtual CmdStack GetCmdStack() {
@@ -59,20 +57,19 @@ namespace smartEdit {
                 return;
             }
         }
-        private void DBQuery_FormClosed(object sender, FormClosedEventArgs e) {
-            ;
-        }
-        public Core.ControllerDocument GetController() { return m_Controller; }
+
         public void SetController(Core.ControllerDocument Controller) {
-            m_Controller = Controller;  //dont register??
             this.widgetCode.SetController(Controller);
         }
         public void OnUpdateEvent(object sender, EventArgs e) {
         }
-        Core.ControllerDocument m_Controller = null;
 
-        private void widgetDiagramPage1_Click(object sender, EventArgs e) {
-            MessageBox.Show("test");
+        private void saveToolStripButton_Click(object sender, EventArgs e) {
+            SaveFile("");
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e) {
+            MessageBox.Show(this.Text);
         }
 
     }

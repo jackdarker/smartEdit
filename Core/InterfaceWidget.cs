@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace smartEdit.Core {
 
-    public delegate void ToolSelectedEventHandler(object sender, MouseOperation Tool);
+    public delegate void ViewChangedEventHandler(object sender, IView View);
     public delegate void UpdateEventHandler(object sender, EventArgs e);
     public delegate void MouseInputEventHandler(object sender, MouseInputEventArgs e);
     public delegate void MouseFeedbackEventHandler(object sender, MouseOperation e);
@@ -13,10 +13,11 @@ namespace smartEdit.Core {
     /// Interface for the Controller
     /// </summary>
     public interface IController {
-        void OnToolChanged(object sender, smartEdit.Core.MouseOperation Tool);
+        void OnViewChanged(object sender, IView View);  //
         void OnMouseInput(object sender, MouseInputEventArgs e);
         CmdStackGroup GetCmdStack();
     }
+
     /// <summary>
     /// Basic-Interface for Views that interoperate with Controller
     /// </summary>
@@ -25,8 +26,11 @@ namespace smartEdit.Core {
         /// Attaches View to new Controller
         void SetController(Core.ControllerDocument Ctrl);
         void OnUpdateEvent(object sender, EventArgs e);
+        ToolStrip GetToolbar();
         CmdStack GetCmdStack();
+        ViewData GetViewData();
     }
+
     /// <summary>
     /// Basic-Interface for Views that visualize model data with standard controlls like buttons, Listboxes, Combos...
     /// </summary>

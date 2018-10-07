@@ -38,9 +38,6 @@ namespace smartEdit {
             tvProjects = new Widgets.WidgetProject();
             ControllerDocument Controller = ControllerDocument.Instance;
             Controller.SetTopLevelForm(this);
-           /* widgetShapePalette1.SetController(m_Controller);
-            widgetDiagramShapeTree1.SetController(m_Controller);
-            */;
               Controller.GetCmdStack().EventCanRedoChanged += new EventHandler<smartEdit.Core.CmdStackGroup.BoolEventArgs>(
                 delegate(object sender, smartEdit.Core.CmdStackGroup.BoolEventArgs e) { btRedo.Enabled = e.State; });
               Controller.GetCmdStack().EventCanUndoChanged += new EventHandler<smartEdit.Core.CmdStackGroup.BoolEventArgs>(
@@ -52,9 +49,7 @@ namespace smartEdit {
                 });
             btRedo.Click += new EventHandler(Controller.GetCmdStack().RedoEvent);
             btUndo.Click += new EventHandler(Controller.GetCmdStack().UndoEvent);
-            //widgetShapePalette1.EventShapeSelected += new smartEdit.Core.ShapeSelectedEventHandler(m_Controller.OnSetShapeTemplate);
-            //widgetShapePalette1.EventToolChanged += new smartEdit.Core.ToolChangedEventHandler(m_Controller.OnToolChanged);
-          //  this.widgetShapePalette1.UpdateView();
+            this.tabForms.OnClose+=new TabCtlEx.OnHeaderCloseDelegate(tabForms_OnClose);
         }
         private void ShowNewForm(object sender, EventArgs e) {
             NewEditor();
@@ -106,20 +101,69 @@ namespace smartEdit {
                 if (_stream != null) _stream.CloseInputStream();
             }
         }
+        
+
         public VwCode NewEditor() {
             VwCode childForm = new VwCode();
             childForm.SetController(ControllerDocument.Instance);  //do we need this?
             childForm.MdiParent = this;
-            childForm.Text = "Fenster " + childFormNumber++;
+            childForm.Activated += new EventHandler(childForm_Activated);
+            childForm.Text = "Window " + (++childFormNumber);
             childForm.WindowState = FormWindowState.Maximized;
             childForm.Show();
-            childForm.Activated += new EventHandler(childForm_Activated);
             this.ActivateMdiChild(childForm);
             return childForm;
         }
+        void tabForms_OnClose(object sender, CloseEventArgs e) {
+            if (e.TabIndex < 0) return;
+            TabPage _Page = this.tabForms.TabPages[e.TabIndex];
+            Form _frm = (Form)_Page.Tag;
+            this.tabForms.Controls.Remove(_Page);
+            _frm.Close();
 
+        }
         void childForm_Activated(object sender, EventArgs e) {
-            ControllerDocument.Instance.ViewFocusChanged((VwCode)ActiveMdiChild);
+            if (this.ActiveMdiChild == null) {// If no any child form, hide tabControl 
+                tabForms.Visible = false;
+                
+            } else {// Child form always maximized 
+               //?? this.ActiveMdiChild.WindowState = FormWindowState.Maximized;
+                // If child form is new and no has tabPage, 
+                // create new tabPage 
+                if (this.ActiveMdiChild.Tag == null) {
+                    // Add a tabPage to tabControl with child 
+                    // form caption 
+                    TabPage tp = new TabPage(this.ActiveMdiChild.Text);
+                    tp.Tag = this.ActiveMdiChild;
+                    tp.Parent = tabForms;
+                    tabForms.SelectedTab = tp;
+
+                    this.ActiveMdiChild.Tag = tp;
+                    this.ActiveMdiChild.FormClosed +=
+                        new FormClosedEventHandler( ActiveMdiChild_FormClosed);
+                }
+
+                if (!tabForms.Visible) tabForms.Visible = true;
+
+            }
+            //revert merged toolbar and merge new
+            ToolStripManager.RevertMerge(toolMain);
+            IView frmChild = (IView)this.ActiveMdiChild;
+            if (frmChild != null) {
+                // The frmChild.FormToolStrip is a property that exposes the
+                // toolstrip on your child form
+                ToolStripManager.Merge(frmChild.GetToolbar(), toolMain);
+            }
+            ControllerDocument.Instance.OnViewChanged(ActiveMdiChild, (IView)ActiveMdiChild);
+        }
+        private void ActiveMdiChild_FormClosed(object sender,FormClosedEventArgs e) {
+            ((sender as Form).Tag as TabPage).Dispose();
+            ToolStripManager.RevertMerge(toolMain);
+        }
+        private void tabForms_SelectedIndexChanged(object sender, TabControlEventArgs e) {
+            if ((tabForms.SelectedTab != null) &&
+                (tabForms.SelectedTab.Tag != null))
+                (tabForms.SelectedTab.Tag as Form).Select();
         }
         /* private void OpenFile(object sender, EventArgs e)
          {
@@ -136,7 +180,7 @@ namespace smartEdit {
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e) {
         }
         private void ToolBarToolStripMenuItem_Click(object sender, EventArgs e) {
-            toolStrip.Visible = toolBarToolStripMenuItem.Checked;
+            toolMain.Visible = toolBarToolStripMenuItem.Checked;
         }
         private void StatusBarToolStripMenuItem_Click(object sender, EventArgs e) {
             statusStrip.Visible = statusBarToolStripMenuItem.Checked;
@@ -236,5 +280,7 @@ namespace smartEdit {
         private void mnuItemShowLogListClick(object sender, EventArgs e) {
 
         }
+
+        
     }
 }
