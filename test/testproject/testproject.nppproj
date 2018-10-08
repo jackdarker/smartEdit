@@ -6,6 +6,7 @@
           <node name="helpers" isDir="True" isExpand="False">
             <node name="sub.seq" isDir="False" isExpand="False" />
           </node>
+          <node name="New File" isDir="False" isExpand="False" />
           <node name="StandardObj.seq" isDir="False" isExpand="False" />
           <node name="test.seq" isDir="False" isExpand="False" />
         </node>

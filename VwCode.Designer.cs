@@ -256,7 +256,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.Name = "VwCode";
             this.Text = "Form3";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DBQuery_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.toolStrip.ResumeLayout(false);

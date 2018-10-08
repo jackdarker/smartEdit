@@ -105,7 +105,7 @@ namespace smartEdit.Core {
                     delegate(object sender, FormClosedEventArgs e) {
                         m_Views.RemoveForm((Form)sender); });
                 m_Views.AddForm(File, _Editor);
-                _Editor.Activate();
+                _Editor.Select(); //.Activate();
             } else {
                 _frm.Activate();
             }

@@ -28,14 +28,13 @@ namespace smartEdit {
             public int m_FullScreen;
             public Rectangle m_WndRectangle;
         }
-        smartEdit.Widgets.WidgetProject tvProjects;
+
         public MDIParent() {
             m_AppData = new AppData();
             InitializeComponent();
             menuStrip.MdiWindowListItem = windowsMenu;
-          //  Controls.Add( new DockingControl(this,DockStyle.Left,new Widgets.WidgetCodePage()));
+          //Todo  Controls.Add( new DockingControl(this,DockStyle.Left,new Widgets.WidgetCodePage()));
 
-            tvProjects = new Widgets.WidgetProject();
             ControllerDocument Controller = ControllerDocument.Instance;
             Controller.SetTopLevelForm(this);
               Controller.GetCmdStack().EventCanRedoChanged += new EventHandler<smartEdit.Core.CmdStackGroup.BoolEventArgs>(
@@ -51,9 +50,7 @@ namespace smartEdit {
             btUndo.Click += new EventHandler(Controller.GetCmdStack().UndoEvent);
             this.tabForms.OnClose+=new TabCtlEx.OnHeaderCloseDelegate(tabForms_OnClose);
         }
-        private void ShowNewForm(object sender, EventArgs e) {
-            NewEditor();
-        }
+        
         private string GetIniFileName() {
             string File = Application.StartupPath + Application.ProductName + ".cfg";
             return File;
@@ -102,7 +99,9 @@ namespace smartEdit {
             }
         }
         
-
+        private void ShowNewForm(object sender, EventArgs e) {
+            NewEditor();
+        }
         public VwCode NewEditor() {
             VwCode childForm = new VwCode();
             childForm.SetController(ControllerDocument.Instance);  //do we need this?
@@ -114,14 +113,7 @@ namespace smartEdit {
             this.ActivateMdiChild(childForm);
             return childForm;
         }
-        void tabForms_OnClose(object sender, CloseEventArgs e) {
-            if (e.TabIndex < 0) return;
-            TabPage _Page = this.tabForms.TabPages[e.TabIndex];
-            Form _frm = (Form)_Page.Tag;
-            this.tabForms.Controls.Remove(_Page);
-            _frm.Close();
 
-        }
         void childForm_Activated(object sender, EventArgs e) {
             if (this.ActiveMdiChild == null) {// If no any child form, hide tabControl 
                 tabForms.Visible = false;
@@ -144,7 +136,7 @@ namespace smartEdit {
                 }
 
                 if (!tabForms.Visible) tabForms.Visible = true;
-
+                tabForms.SelectedTab.Text = this.ActiveMdiChild.Text+ "    ."; //Todo
             }
             //revert merged toolbar and merge new
             ToolStripManager.RevertMerge(toolMain);
@@ -156,8 +148,21 @@ namespace smartEdit {
             }
             ControllerDocument.Instance.OnViewChanged(ActiveMdiChild, (IView)ActiveMdiChild);
         }
+        void tabForms_OnClose(object sender, CloseEventArgs e) {
+            if (e.TabIndex < 0) return;
+            TabPage _Page = this.tabForms.TabPages[e.TabIndex];
+            Form _frm = (Form)_Page.Tag;
+            _frm.Close();   //closing the form will trigger removal of tab
+
+        }
         private void ActiveMdiChild_FormClosed(object sender,FormClosedEventArgs e) {
-            ((sender as Form).Tag as TabPage).Dispose();
+            Form _frm = (Form)sender;
+            TabPage _Page =(TabPage)_frm.Tag;
+            if(_Page !=null) {  
+                this.tabForms.Controls.Remove(_Page);
+                _Page.Dispose();
+            }
+
             ToolStripManager.RevertMerge(toolMain);
         }
         private void tabForms_SelectedIndexChanged(object sender, TabControlEventArgs e) {

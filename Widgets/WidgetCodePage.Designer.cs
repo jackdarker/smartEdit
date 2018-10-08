@@ -26,6 +26,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.TextArea = new ScintillaNET.Scintilla();
             this.PageSettingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.btCopy = new System.Windows.Forms.ToolStripMenuItem();
@@ -34,6 +35,7 @@
             this.neuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.contextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,11 +60,21 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.TextArea);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(480, 331);
             this.panel1.TabIndex = 0;
+            // 
+            // TextArea
+            // 
+            this.TextArea.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TextArea.Location = new System.Drawing.Point(0, 0);
+            this.TextArea.Name = "TextArea";
+            this.TextArea.ScrollWidth = 200;
+            this.TextArea.Size = new System.Drawing.Size(480, 331);
+            this.TextArea.TabIndex = 0;
             // 
             // PageSettingMenuItem
             // 
@@ -116,6 +128,7 @@
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);
             this.toolStripContainer1.ResumeLayout(false);
             this.toolStripContainer1.PerformLayout();
+            this.panel1.ResumeLayout(false);
             this.contextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 

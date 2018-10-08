@@ -611,14 +611,14 @@
             // widgetClassView1
             // 
             this.widgetClassView1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.widgetClassView1.Location = new System.Drawing.Point(545, 71);
+            this.widgetClassView1.Location = new System.Drawing.Point(545, 47);
             this.widgetClassView1.Name = "widgetClassView1";
-            this.widgetClassView1.Size = new System.Drawing.Size(221, 252);
+            this.widgetClassView1.Size = new System.Drawing.Size(221, 276);
             this.widgetClassView1.TabIndex = 7;
             // 
             // tabForms
             // 
-            this.tabForms.ConfirmOnClose = true;
+            this.tabForms.ConfirmOnClose = false;
             this.tabForms.Dock = System.Windows.Forms.DockStyle.Top;
             this.tabForms.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabForms.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -626,7 +626,7 @@
             this.tabForms.Location = new System.Drawing.Point(200, 47);
             this.tabForms.Name = "tabForms";
             this.tabForms.SelectedIndex = 0;
-            this.tabForms.Size = new System.Drawing.Size(566, 24);
+            this.tabForms.Size = new System.Drawing.Size(345, 24);
             this.tabForms.TabIndex = 9;
             this.tabForms.TabStop = false;
             this.tabForms.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabForms_SelectedIndexChanged);

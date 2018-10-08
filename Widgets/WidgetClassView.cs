@@ -601,7 +601,43 @@ namespace smartEdit.Widgets
             tvClassView.Nodes.Clear();
             _LoadClassView();
         }
+        private void tvClassView_AfterSelect(object sender, TreeViewEventArgs e) {
+            if (tvClassView.SelectedNode == null)
+                return;
 
+            string _SourceFile;
+            string _text = "";
+            int _Pos = 0;
+            ObjDecl _decl = e.Node.Tag as ObjDecl;
+            if (_decl != null) {
+                switch (_decl.ClassType()) {
+                    case ObjDecl.TClassType.tCTSeq:
+                        _text = _decl.ClassID() + " " + _decl.Function() + "\r\n" + _decl.Description();
+                        break;
+                    case ObjDecl.TClassType.tCTClass:
+                        _text = _decl.ClassID() + " " + _decl.Function() + "\r\n" + _decl.Description();
+                        break;
+                    case ObjDecl.TClassType.tCTFunc:
+                        _text = _decl.ClassID() + " " + _decl.Function() + "\r\n";
+                        _text += "(" + _decl.Params() + ")" + "->" + _decl.Returns() + "\r\n";
+                        _text += "\r\n" + _decl.Description();
+                        break;
+                    default:
+                        break;
+                }
+                _SourceFile = _decl.ClassID();
+                _Pos = _decl.StartPos();
+            } else {
+                Obj _obj = tvClassView.SelectedNode.Tag as Obj;
+                if (_obj != null) {
+                    _text = _obj.ClassID() + " " + _obj.Name() + "\r\n" + _obj.Scope();
+                    _text += "\r\n" + _obj.Description();
+                    _SourceFile = _obj.Scope();
+                    _Pos = _obj.StartPos();
+                } else return;
+            }
+            textBox1.Text = _text;
+        }
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             RefreshClassView();

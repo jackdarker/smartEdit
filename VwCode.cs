@@ -22,14 +22,15 @@ namespace smartEdit {
         }
         public void LoadFile(String File) {
             this.m_Data.File = File;
-            this.Text = File;
+            this.Text = Path.GetFileName(File);
             this.widgetCode.LoadFile(File);
         }
         public void SaveFile(String File) {
             if (File != String.Empty) {
                 this.m_Data.File = File;
-                this.Text = File;
+                this.Text = Path.GetFileName(File);
             }
+            //Todo show dialog for SaveAs...
             if (this.m_Data.File != String.Empty) {
                 this.widgetCode.SaveFile(this.m_Data.File);
             }
@@ -42,9 +43,9 @@ namespace smartEdit {
             return m_CmdStack;
         }
         public void OnToolChanged(object sender, smartEdit.Core.MouseOperation Op) { }
-        private void DBQuery_FormClosing(object sender, FormClosingEventArgs e) {
+        private void OnFormClosing(object sender, FormClosingEventArgs e) {
             if (m_Data.Modified && e.CloseReason == CloseReason.UserClosing) {
-                if (DialogResult.Cancel == MessageBox.Show(this, "Abfrage modifiziert. Schließen ohne speichern?", "Schließen ohne speichern", MessageBoxButtons.OKCancel)) {
+                if (DialogResult.Cancel == MessageBox.Show(this, "Data modified. Close without saving?", "Close without saving", MessageBoxButtons.OKCancel)) {
                     e.Cancel = true;
                 } else {
                     DialogResult = DialogResult.OK;

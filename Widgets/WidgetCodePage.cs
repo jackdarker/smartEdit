@@ -20,9 +20,7 @@ namespace smartEdit.Widgets {
         ScintillaNET.Scintilla TextArea;
         public WidgetCodePage() {
             InitializeComponent();
-            // CREATE CONTROL
-            TextArea = new ScintillaNET.Scintilla();
-            this.panel1.Controls.Add(TextArea);
+            
 
             // BASIC CONFIG
             TextArea.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -37,10 +35,112 @@ namespace smartEdit.Widgets {
             InitNumberMargin();
             InitBookmarkMargin();
             InitCodeFolding();
+            InitAutoComplete();
 
             TextArea.UsePopup(false); //disable buildin-context menu; we want to handle this ourself
         }
 
+        void TextArea_AutoCCharDeleted(object sender, EventArgs e) {
+            
+        }
+        private void OnTextChanged(object sender, EventArgs e) {
+
+        }
+        private void TextArea_MarginClick(object sender, MarginClickEventArgs e) {
+            if (e.Margin == BOOKMARK_MARGIN) {
+                // Do we have a marker for this line?
+                const uint mask = (1 << BOOKMARK_MARKER);
+                var line = TextArea.Lines[TextArea.LineFromPosition(e.Position)];
+                if ((line.MarkerGet() & mask) > 0) {
+                    // Remove existing bookmark
+                    line.MarkerDelete(BOOKMARK_MARKER);
+                } else {
+                    // Add bookmark
+                    line.MarkerAdd(BOOKMARK_MARKER);
+                }
+            }
+        }
+        void TextArea_CharAdded(object sender, CharAddedEventArgs e) {
+            String _word =GetCurrentWord();
+            
+            if (_word.Length>=2) {
+                String _line = GetLine(GetCurrentLine());
+                List<ObjDecl> _lst = ControllerDocument.Instance.GetModel().lookupAll(
+                    _word, _line, ControllerDocument.Instance.GetModel().GetRelativePath(GetViewData().File));
+                ShowAutoCompletion(_word.Length, _lst);
+            }
+            
+        }
+        #region SCINTILA-Stuff
+        ////////////////////////////////////////////////////////////////
+        public void ShowAutoCompletion(int count, List<ObjDecl> lst) {
+            if (lst.Count == 0)
+                return;
+            StringBuilder sb = new StringBuilder();
+            foreach (ObjDecl item in lst) {
+                if (sb.Length == 0)
+                    sb.Append(item.Function());
+                else
+                    sb.Append(" " + item.Function());
+            }
+
+            TextArea.AutoCShow(count, sb.ToString()); 
+            //?? can only display AC or CT  Win32.SendMessage(PluginBase.GetCurrentScintilla(), SciMsg.SCI_CALLTIPSHOW, 1, sb.ToString());
+
+        }
+        void ShowAutoCompletion(int count, List<string> lst) {
+            if (lst.Count == 0)
+                return;
+            StringBuilder sb = new StringBuilder();
+            foreach (string item in lst) {
+                if (sb.Length == 0)
+                    sb.Append(item);
+                else
+                    sb.Append(" " + item);
+            }
+
+            TextArea.AutoCShow(count, sb.ToString()); 
+        }
+        static char[] _Spliter = { ' ', '.', '\n', '\t', '(', ')' };
+        /// <summary>
+        /// Get the current cursor at the forward word
+        /// </summary>
+        /// <returns></returns>
+        public string GetCurrentWord() {
+            int currentPos = TextArea.CurrentPosition;
+            int size = 64;
+            int beg = currentPos - (size - 1);
+            beg = beg > 0 ? beg : 0;
+            int end = currentPos;
+            size = end - beg;
+            String txtRange = TextArea.GetTextRange(beg, end);
+            string[] arr = txtRange.Split(_Spliter);
+            return arr[arr.Length - 1];
+        }
+        /// <summary>
+        /// Gets the current row, starting with 0
+        /// </summary>
+        /// <returns></returns>
+        public int GetCurrentLine() {
+            return TextArea.CurrentLine;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public int GetLineFromPosition(int pos) {
+            return TextArea.LineFromPosition(pos);
+        }
+        /// <summary>
+        /// Get the specified row contents
+        /// </summary>
+        /// <param name="lineNo">行号，从0开始</param>
+        /// <returns></returns>
+        public string GetLine(int lineNo) {
+           return TextArea.Lines[lineNo].Text;
+        }
+        /// ///////////////////////////////////////////////////////////////
+        #endregion
         public virtual CmdStack GetCmdStack() { 
             IView _parent = (IView) this.ParentForm;
             if (_parent != null) return _parent.GetCmdStack();
@@ -52,9 +152,7 @@ namespace smartEdit.Widgets {
         public virtual ViewData GetViewData() {
             return null;
         }
-        private void OnTextChanged(object sender, EventArgs e) {
-
-        }
+        
         #region Numbers, Bookmarks, Code Folding
 
         /// <summary>
@@ -88,6 +186,15 @@ namespace smartEdit.Widgets {
         /// </summary>
         private const bool CODEFOLDING_CIRCULAR = true;
 
+        private void InitAutoComplete() {
+            TextArea.CharAdded += (TextArea_CharAdded);
+            TextArea.AutoCCharDeleted += (TextArea_AutoCCharDeleted);
+            TextArea.AutoCAutoHide = false;
+            TextArea.AutoCCancelAtStart = false;
+            TextArea.AutoCChooseSingle = false;
+            TextArea.AutoCMaxHeight = 5;
+            TextArea.AutoCMaxWidth = 100;
+        }
         private void InitColors() {
 
             TextArea.SetSelectionBackColor(true, IntToColor(0x114D9C));
@@ -127,7 +234,6 @@ namespace smartEdit.Widgets {
             TextArea.SetKeywords(1, "void Null ArgumentError arguments Array Boolean Class Date DefinitionError Error EvalError Function int Math Namespace Number Object RangeError ReferenceError RegExp SecurityError String SyntaxError TypeError uint XML XMLList Boolean Byte Char DateTime Decimal Double Int16 Int32 Int64 IntPtr SByte Single UInt16 UInt32 UInt64 UIntPtr Void Path File System Windows Forms ScintillaNET");
             string test = TextArea.DescribeKeywordSets();
         }
-
         private void InitNumberMargin() {
 
             TextArea.Styles[Style.LineNumber].BackColor = IntToColor(BACK_COLOR);
@@ -143,7 +249,6 @@ namespace smartEdit.Widgets {
 
             TextArea.MarginClick += TextArea_MarginClick;
         }
-
         private void InitBookmarkMargin() {
 
             var margin = TextArea.Margins[BOOKMARK_MARGIN];
@@ -159,7 +264,6 @@ namespace smartEdit.Widgets {
             marker.SetAlpha(100);
 
         }
-
         private void InitCodeFolding() {
 
             TextArea.SetFoldMarginColor(true, IntToColor(BACK_COLOR));
@@ -195,20 +299,7 @@ namespace smartEdit.Widgets {
 
         }
         #endregion
-        private void TextArea_MarginClick(object sender, MarginClickEventArgs e) {
-            if (e.Margin == BOOKMARK_MARGIN) {
-                // Do we have a marker for this line?
-                const uint mask = (1 << BOOKMARK_MARKER);
-                var line = TextArea.Lines[TextArea.LineFromPosition(e.Position)];
-                if ((line.MarkerGet() & mask) > 0) {
-                    // Remove existing bookmark
-                    line.MarkerDelete(BOOKMARK_MARKER);
-                } else {
-                    // Add bookmark
-                    line.MarkerAdd(BOOKMARK_MARKER);
-                }
-            }
-        }
+        
         public void LoadFile(String path) {
             if (File.Exists(path)) {
                // FileName.Text = Path.GetFileName(path);
@@ -229,20 +320,6 @@ namespace smartEdit.Widgets {
         }
         #region event & delegates
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-       /* protected event smartEdit.Core.ShapeSelectedEventHandler EventSelect;
-        public void RegisterShapeSelected(smartEdit.Core.ControllerDocument Listener) {
-            EventSelect += new smartEdit.Core.ShapeSelectedEventHandler(Listener.OnShapeSelected);
-        }
-        public void UnregisterShapeSelected(smartEdit.Core.ControllerDocument Listener) {
-            EventSelect -= new smartEdit.Core.ShapeSelectedEventHandler(Listener.OnShapeSelected);
-        }
-        protected virtual void FireShapeSelected(object sender, smartEdit.Core.ShapeInterface Shape) {//?? notused
-            smartEdit.Core.ShapeSelectedEventHandler handler = EventSelect;
-            if (handler != null) {
-                handler(sender, Shape);
-            }
-        }*/
-        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         protected event smartEdit.Core.MouseInputEventHandler EventMouseInput;
         public void RegisterMouseInput(smartEdit.Core.ControllerDocument Listener) {
             EventMouseInput += new smartEdit.Core.MouseInputEventHandler(Listener.OnMouseInput);
@@ -256,7 +333,7 @@ namespace smartEdit.Widgets {
 
 
         }
-        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
         public void OnUpdateEvent(object sender, EventArgs e) {
             if (this.InvokeRequired) {
                 this.Invoke(new smartEdit.Core.UpdateEventHandler(OnUpdateEvent));
@@ -278,7 +355,7 @@ namespace smartEdit.Widgets {
         public void OnMouseFeedback(object sender, smartEdit.Core.MouseOperation Op) {
 
         }
-        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
         private void Canvas_MouseDoubleClick(object sender, MouseEventArgs e) {//?? not used
             /* FireMouseInput(sender, new smartEdit.Core.MouseInputEventArgs(
                  new MouseEventArgs(e.Button,e.Clicks,m_DrawingContext.FromScreen(e.X),m_DrawingContext.FromScreen(e.Y),e.Delta),
