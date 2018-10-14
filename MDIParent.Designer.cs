@@ -74,6 +74,7 @@
             this.toolMain = new System.Windows.Forms.ToolStrip();
             this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.saveAllStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.printToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -87,8 +88,9 @@
             this.RightToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.LeftToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.ContentPanel = new System.Windows.Forms.ToolStripContentPanel();
-            this.widgetClassView1 = new smartEdit.Widgets.WidgetClassView();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tabForms = new smartEdit.TabCtlEx();
+            this.widgetClassView1 = new smartEdit.Widgets.WidgetClassView();
             this.widgetProject1 = new smartEdit.Widgets.WidgetProject();
             this.widgetLogList = new smartEdit.Widgets.WidgetLogList();
             this.statusStrip.SuspendLayout();
@@ -479,6 +481,7 @@
             this.toolMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripButton,
             this.openToolStripButton,
+            this.saveAllStripButton,
             this.saveToolStripButton,
             this.toolStripSeparator1,
             this.printToolStripButton,
@@ -508,12 +511,25 @@
             // 
             // openToolStripButton
             // 
+            this.openToolStripButton.Enabled = false;
+            this.openToolStripButton.Image = global::smartEdit.Properties.Resources.SymbolOpen;
             this.openToolStripButton.Name = "openToolStripButton";
-            this.openToolStripButton.Size = new System.Drawing.Size(23, 4);
+            this.openToolStripButton.Size = new System.Drawing.Size(23, 20);
+            // 
+            // saveAllStripButton
+            // 
+            this.saveAllStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.saveAllStripButton.Enabled = false;
+            this.saveAllStripButton.Image = global::smartEdit.Properties.Resources.SymbolSaveAll;
+            this.saveAllStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveAllStripButton.Name = "saveAllStripButton";
+            this.saveAllStripButton.Size = new System.Drawing.Size(23, 20);
+            this.saveAllStripButton.Text = "Save All";
             // 
             // saveToolStripButton
             // 
             this.saveToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.saveToolStripButton.Enabled = false;
             this.saveToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("saveToolStripButton.Image")));
             this.saveToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
             this.saveToolStripButton.Name = "saveToolStripButton";
@@ -528,6 +544,7 @@
             // printToolStripButton
             // 
             this.printToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.printToolStripButton.Enabled = false;
             this.printToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("printToolStripButton.Image")));
             this.printToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
             this.printToolStripButton.Name = "printToolStripButton";
@@ -537,6 +554,7 @@
             // printPreviewToolStripButton
             // 
             this.printPreviewToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.printPreviewToolStripButton.Enabled = false;
             this.printPreviewToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("printPreviewToolStripButton.Image")));
             this.printPreviewToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
             this.printPreviewToolStripButton.Name = "printPreviewToolStripButton";
@@ -550,22 +568,22 @@
             // 
             // btUndo
             // 
-            this.btUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btUndo.Enabled = false;
-            this.btUndo.Image = ((System.Drawing.Image)(resources.GetObject("btUndo.Image")));
+            this.btUndo.Image = global::smartEdit.Properties.Resources.SymbolUndo;
             this.btUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btUndo.Name = "btUndo";
-            this.btUndo.Size = new System.Drawing.Size(40, 19);
+            this.btUndo.Size = new System.Drawing.Size(23, 20);
             this.btUndo.Text = "Undo";
             // 
             // btRedo
             // 
-            this.btRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btRedo.Enabled = false;
-            this.btRedo.Image = ((System.Drawing.Image)(resources.GetObject("btRedo.Image")));
+            this.btRedo.Image = global::smartEdit.Properties.Resources.SymbolRedo;
             this.btRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btRedo.Name = "btRedo";
-            this.btRedo.Size = new System.Drawing.Size(38, 19);
+            this.btRedo.Size = new System.Drawing.Size(23, 20);
             this.btRedo.Text = "Redo";
             // 
             // toolStripSeparator2
@@ -608,13 +626,13 @@
             this.ContentPanel.AutoScroll = true;
             this.ContentPanel.Size = new System.Drawing.Size(632, 382);
             // 
-            // widgetClassView1
+            // statusStrip1
             // 
-            this.widgetClassView1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.widgetClassView1.Location = new System.Drawing.Point(545, 47);
-            this.widgetClassView1.Name = "widgetClassView1";
-            this.widgetClassView1.Size = new System.Drawing.Size(221, 276);
-            this.widgetClassView1.TabIndex = 7;
+            this.statusStrip1.Location = new System.Drawing.Point(200, 301);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(345, 22);
+            this.statusStrip1.TabIndex = 11;
+            this.statusStrip1.Text = "statusStrip1";
             // 
             // tabForms
             // 
@@ -630,6 +648,14 @@
             this.tabForms.TabIndex = 9;
             this.tabForms.TabStop = false;
             this.tabForms.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabForms_SelectedIndexChanged);
+            // 
+            // widgetClassView1
+            // 
+            this.widgetClassView1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.widgetClassView1.Location = new System.Drawing.Point(545, 47);
+            this.widgetClassView1.Name = "widgetClassView1";
+            this.widgetClassView1.Size = new System.Drawing.Size(221, 276);
+            this.widgetClassView1.TabIndex = 7;
             // 
             // widgetProject1
             // 
@@ -652,6 +678,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(766, 453);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.tabForms);
             this.Controls.Add(this.widgetClassView1);
             this.Controls.Add(this.widgetProject1);
@@ -743,6 +770,8 @@
         private System.Windows.Forms.ToolStripMenuItem mnuShowLogList;
         private TabCtlEx tabForms;
         private Widgets.WidgetClassView widgetClassView1;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripButton saveAllStripButton;
     }
 }
 

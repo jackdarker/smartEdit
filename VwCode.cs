@@ -16,7 +16,15 @@ namespace smartEdit {
         public VwCode() {
             InitializeComponent();
             toolStrip.Visible = false; //toolstrip is merged in MDIParent
+            this.widgetCode.EventUpdateStatus += (FireUpdateStatus);
         }
+
+        public event smartEdit.Core.UpdateStatusEventHandler EventUpdateStatus;
+        protected virtual void FireUpdateStatus(object sender, UpdateStatusEventArgs e) {
+            smartEdit.Core.UpdateStatusEventHandler handler = EventUpdateStatus;
+            if (handler != null) handler(sender, e);
+        }
+
         public virtual ViewData GetViewData() {
             return m_Data;
         }

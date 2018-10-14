@@ -24,11 +24,12 @@ namespace smartEdit.Widgets {
 
             // BASIC CONFIG
             TextArea.Dock = System.Windows.Forms.DockStyle.Fill;
-            TextArea.TextChanged += (this.OnTextChanged);
+            TextArea.TextChanged += this.OnTextChanged;
 
             // INITIAL VIEW CONFIG
             TextArea.WrapMode = WrapMode.None;
             TextArea.IndentationGuides = IndentView.LookBoth;
+            TextArea.UpdateUI += this.TextArea_UpdateUI;
 
             InitColors();
             InitSyntaxColoring();
@@ -38,6 +39,45 @@ namespace smartEdit.Widgets {
             InitAutoComplete();
 
             TextArea.UsePopup(false); //disable buildin-context menu; we want to handle this ourself
+        }
+        /// <summary>
+        /// manages Brace highlighting
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void TextArea_UpdateUI(object sender, UpdateUIEventArgs e) {
+            // Has the caret changed position?
+            var caretPos = TextArea.CurrentPosition;
+            if (lastCaretPos != caretPos) {
+                UpdateStatusEventArgs evt = new UpdateStatusEventArgs();
+                evt.Text = "Pos: " + caretPos.ToString();
+                FireUpdateStatus(this, evt);
+                lastCaretPos = caretPos;
+                var bracePos1 = -1;
+                var bracePos2 = -1;
+                //TODO Brace higligthing not working or overridden by Lexer??
+                // Is there a brace to the left or right?
+                if (caretPos > 0 && IsBrace(TextArea.GetCharAt(caretPos - 1)))
+                    bracePos1 = (caretPos - 1);
+                else if (IsBrace(TextArea.GetCharAt(caretPos)))
+                    bracePos1 = caretPos;
+
+                if (bracePos1 >= 0) {
+                    // Find the matching brace
+                    bracePos2 = TextArea.BraceMatch(bracePos1);
+                    if (bracePos2 == Scintilla.InvalidPosition) {
+                        TextArea.BraceBadLight(bracePos1);
+                        TextArea.HighlightGuide = 0;
+                    } else {
+                        TextArea.BraceHighlight(bracePos1, bracePos2);
+                        TextArea.HighlightGuide = TextArea.GetColumn(bracePos1);
+                    }
+                } else {
+                    // Turn off brace matching
+                    TextArea.BraceHighlight(Scintilla.InvalidPosition, Scintilla.InvalidPosition);
+                    TextArea.HighlightGuide = 0;
+                }
+            }
         }
 
         void TextArea_AutoCCharDeleted(object sender, EventArgs e) {
@@ -61,19 +101,47 @@ namespace smartEdit.Widgets {
             }
         }
         void TextArea_CharAdded(object sender, CharAddedEventArgs e) {
-            String _word =GetCurrentWord();
-            
+            String _word =GetCurrentWord();            
             if (_word.Length>=2) {
+                Project _proj = ProjectManager.GetProjectByItsFile(GetViewData().File);
+                if (_proj == null)
+                    return;
                 String _line = GetLine(GetCurrentLine());
-                List<ObjDecl> _lst = ControllerDocument.Instance.GetModel().lookupAll(
-                    _word, _line, ControllerDocument.Instance.GetModel().GetRelativePath(GetViewData().File));
+                List<ObjDecl> _lst = _proj.Model.lookupAll(
+                    _word, _line, _proj.Model.GetRelativePath(GetViewData().File));
                 ShowAutoCompletion(_word.Length, _lst);
+                //TODO cannot show AC & CT at same time -> build own solution
+                //TextArea.CallTipShow(5, "\x01 1 of 3 \x02 \ntestA\ntest"); 
+                //TextArea.CharPositionFromPointClose(..)
+
+                // MyClass.Init( bool Start, int End) -> bool
+                // user enters this | AC                |  CT
+                // MyC              | MyClass           | Info to preselected object  
+                // MyClass.         | list of functions | info to preselected function
+                // MyClass.Ini      | Init              | like above
+                // MyClass.Init(Xpo | Xposition         | Info to operand
             }
             
         }
         #region SCINTILA-Stuff
         ////////////////////////////////////////////////////////////////
-        public void ShowAutoCompletion(int count, List<ObjDecl> lst) {
+        int lastCaretPos = 0;
+        private static bool IsBrace(int c) {
+            switch (c) {
+                case '(':
+                case ')':
+                case '[':
+                case ']':
+                case '{':
+                case '}':
+                case '<':
+                case '>':
+                    return true;
+            }
+
+            return false;
+        }
+        void ShowAutoCompletion(int count, List<ObjDecl> lst) {
             if (lst.Count == 0)
                 return;
             StringBuilder sb = new StringBuilder();
@@ -113,7 +181,7 @@ namespace smartEdit.Widgets {
             beg = beg > 0 ? beg : 0;
             int end = currentPos;
             size = end - beg;
-            String txtRange = TextArea.GetTextRange(beg, end);
+            String txtRange = TextArea.GetTextRange(beg, size);
             string[] arr = txtRange.Split(_Spliter);
             return arr[arr.Length - 1];
         }
@@ -141,17 +209,7 @@ namespace smartEdit.Widgets {
         }
         /// ///////////////////////////////////////////////////////////////
         #endregion
-        public virtual CmdStack GetCmdStack() { 
-            IView _parent = (IView) this.ParentForm;
-            if (_parent != null) return _parent.GetCmdStack();
-            return null;
-        }
-        public virtual ToolStrip GetToolbar() {
-            return null;
-        }
-        public virtual ViewData GetViewData() {
-            return null;
-        }
+        
         
         #region Numbers, Bookmarks, Code Folding
 
@@ -194,10 +252,11 @@ namespace smartEdit.Widgets {
             TextArea.AutoCChooseSingle = false;
             TextArea.AutoCMaxHeight = 5;
             TextArea.AutoCMaxWidth = 100;
+
         }
         private void InitColors() {
 
-            TextArea.SetSelectionBackColor(true, IntToColor(0x114D9C));
+            TextArea.SetSelectionBackColor(true, IntToColor(0x114D9C)); 
 
         }
         private void InitSyntaxColoring() {
@@ -206,32 +265,35 @@ namespace smartEdit.Widgets {
             TextArea.StyleResetDefault();
             TextArea.Styles[Style.Default].Font = "Consolas";
             TextArea.Styles[Style.Default].Size = 10;
-            TextArea.Styles[Style.Default].BackColor = IntToColor(0x212121);
-            TextArea.Styles[Style.Default].ForeColor = IntToColor(0x0);
+            TextArea.Styles[Style.Default].BackColor = Color.GhostWhite;// IntToColor(0x212121);
+            TextArea.Styles[Style.Default].ForeColor = Color.Black ;// IntToColor(0x0);
+            TextArea.Styles[Style.BraceLight].BackColor = TextArea.Styles[Style.Default].BackColor;
+            TextArea.Styles[Style.BraceLight].ForeColor = Color.BlueViolet;
+            TextArea.Styles[Style.BraceBad].ForeColor = Color.Red;
             TextArea.StyleClearAll();
 
             // Configure the CPP (C#) lexer styles
-            TextArea.Styles[Style.Cpp.Identifier].ForeColor = IntToColor(0xD0DAE2);
-            TextArea.Styles[Style.Cpp.Comment].ForeColor = IntToColor(0xBD758B);
-            TextArea.Styles[Style.Cpp.CommentLine].ForeColor = IntToColor(0x40BF57);
-            TextArea.Styles[Style.Cpp.CommentDoc].ForeColor = IntToColor(0x2FAE35);
-            TextArea.Styles[Style.Cpp.Number].ForeColor = IntToColor(0xFFFF00);
-            TextArea.Styles[Style.Cpp.String].ForeColor = IntToColor(0xFFFF00);
-            TextArea.Styles[Style.Cpp.Character].ForeColor = IntToColor(0xE95454);
-            TextArea.Styles[Style.Cpp.Preprocessor].ForeColor = IntToColor(0x8AAFEE);
-            TextArea.Styles[Style.Cpp.Operator].ForeColor = IntToColor(0xE0E0E0);
-            TextArea.Styles[Style.Cpp.Regex].ForeColor = IntToColor(0xff00ff);
-            TextArea.Styles[Style.Cpp.CommentLineDoc].ForeColor = IntToColor(0x77A7DB);
-            TextArea.Styles[Style.Cpp.Word].ForeColor = IntToColor(0x48A8EE);
-            TextArea.Styles[Style.Cpp.Word2].ForeColor = IntToColor(0xF98906);
-            TextArea.Styles[Style.Cpp.CommentDocKeyword].ForeColor = IntToColor(0xB3D991);
-            TextArea.Styles[Style.Cpp.CommentDocKeywordError].ForeColor = IntToColor(0xFF0000);
-            TextArea.Styles[Style.Cpp.GlobalClass].ForeColor = IntToColor(0x48A8EE);
+            TextArea.Styles[Style.Cpp.Identifier].ForeColor = Color.Purple;//IntToColor(0xD0DAE2);
+            TextArea.Styles[Style.Cpp.Comment].ForeColor = Color.Green;//IntToColor(0xBD758B);
+            TextArea.Styles[Style.Cpp.CommentLine].ForeColor = TextArea.Styles[Style.Cpp.Comment].ForeColor;//IntToColor(0x40BF57);
+            TextArea.Styles[Style.Cpp.CommentDoc].ForeColor = TextArea.Styles[Style.Cpp.Comment].ForeColor;//IntToColor(0x2FAE35);
+            TextArea.Styles[Style.Cpp.Number].ForeColor = Color.DarkOrange;//IntToColor(0xFFFF00);
+            TextArea.Styles[Style.Cpp.String].ForeColor = Color.Fuchsia;//IntToColor(0xFFFF00);
+            TextArea.Styles[Style.Cpp.Character].ForeColor = Color.DeepPink;//IntToColor(0xE95454);
+            TextArea.Styles[Style.Cpp.Preprocessor].ForeColor = Color.Blue;//IntToColor(0x8AAFEE);
+            TextArea.Styles[Style.Cpp.Operator].ForeColor = Color.Black;//IntToColor(0xE0E0E0);
+            TextArea.Styles[Style.Cpp.Regex].ForeColor = Color.Black;//IntToColor(0xff00ff);
+            TextArea.Styles[Style.Cpp.CommentLineDoc].ForeColor = TextArea.Styles[Style.Cpp.CommentLine].ForeColor;//IntToColor(0x77A7DB);
+            TextArea.Styles[Style.Cpp.Word].ForeColor = TextArea.Styles[Style.Cpp.Preprocessor].ForeColor;// IntToColor(0x48A8EE);
+            TextArea.Styles[Style.Cpp.Word2].ForeColor = TextArea.Styles[Style.Cpp.Preprocessor].ForeColor;//IntToColor(0xF98906);
+            TextArea.Styles[Style.Cpp.CommentDocKeyword].ForeColor = Color.Black;//IntToColor(0xB3D991);
+            TextArea.Styles[Style.Cpp.CommentDocKeywordError].ForeColor = Color.Black;//IntToColor(0xFF0000);
+            TextArea.Styles[Style.Cpp.GlobalClass].ForeColor = Color.OrangeRed;//IntToColor(0x48A8EE);
 
             TextArea.Lexer = Lexer.Cpp;
 
-            TextArea.SetKeywords(0, "class extends implements import interface new case do while else if for in switch throw get set function var try catch finally while with default break continue delete return each const namespace package include use is as instanceof typeof author copy default deprecated eventType example exampleText exception haxe inheritDoc internal link mtasc mxmlc param private return see serial serialData serialField since throws usage version langversion playerversion productversion dynamic private public partial static intrinsic internal native override protected AS3 final super this arguments null Infinity NaN undefined true false abstract as base bool break by byte case catch char checked class const continue decimal default delegate do double descending explicit event extern else enum false finally fixed float for foreach from goto group if implicit in int interface internal into is lock long new null namespace object operator out override orderby params private protected public readonly ref return switch struct sbyte sealed short sizeof stackalloc static string select this throw true try typeof uint ulong unchecked unsafe ushort using var virtual volatile void while where yield");
-            TextArea.SetKeywords(1, "void Null ArgumentError arguments Array Boolean Class Date DefinitionError Error EvalError Function int Math Namespace Number Object RangeError ReferenceError RegExp SecurityError String SyntaxError TypeError uint XML XMLList Boolean Byte Char DateTime Decimal Double Int16 Int32 Int64 IntPtr SByte Single UInt16 UInt32 UInt64 UIntPtr Void Path File System Windows Forms ScintillaNET");
+            TextArea.SetKeywords(0, "case do while else if for switch throw function var try catch while default break continue return include using");
+            TextArea.SetKeywords(1, "bool int string variant double");
             string test = TextArea.DescribeKeywordSets();
         }
         private void InitNumberMargin() {
@@ -299,7 +361,23 @@ namespace smartEdit.Widgets {
 
         }
         #endregion
-        
+        public virtual CmdStack GetCmdStack() { 
+            IView _parent = (IView) this.ParentForm;
+            if (_parent != null) return _parent.GetCmdStack();
+            return null;
+        }
+        public virtual ToolStrip GetToolbar() {
+            return null;
+        }
+        IView m_ParentForm = null;
+        public virtual ViewData GetViewData() {
+            if (m_ParentForm == null)
+                m_ParentForm = (IView)this.ParentForm;
+            
+            if (m_ParentForm != null)
+                return m_ParentForm.GetViewData();   
+            return null;
+        }
         public void LoadFile(String path) {
             if (File.Exists(path)) {
                // FileName.Text = Path.GetFileName(path);
@@ -320,6 +398,13 @@ namespace smartEdit.Widgets {
         }
         #region event & delegates
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        
+        public event smartEdit.Core.UpdateStatusEventHandler EventUpdateStatus;
+        protected virtual void FireUpdateStatus(object sender, UpdateStatusEventArgs e) {
+            smartEdit.Core.UpdateStatusEventHandler handler = EventUpdateStatus;
+            if (handler != null) handler(sender, e);
+        }
+
         protected event smartEdit.Core.MouseInputEventHandler EventMouseInput;
         public void RegisterMouseInput(smartEdit.Core.ControllerDocument Listener) {
             EventMouseInput += new smartEdit.Core.MouseInputEventHandler(Listener.OnMouseInput);

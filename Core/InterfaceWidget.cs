@@ -7,8 +7,13 @@ namespace smartEdit.Core {
 
     public delegate void ViewChangedEventHandler(object sender, IView View);
     public delegate void UpdateEventHandler(object sender, EventArgs e);
+    public delegate void UpdateStatusEventHandler(object sender, UpdateStatusEventArgs e);
     public delegate void MouseInputEventHandler(object sender, MouseInputEventArgs e);
     public delegate void MouseFeedbackEventHandler(object sender, MouseOperation e);
+
+    public class UpdateStatusEventArgs : EventArgs {
+        public String Text { get; set; }
+    }
     /// <summary>
     /// Interface for the Controller
     /// </summary>

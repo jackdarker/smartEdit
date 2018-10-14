@@ -86,12 +86,12 @@ namespace smartEdit.Core {
             SetActiveModel(ModelDocument.CreateFromFile(FileName));
         }
         public virtual void SaveToFile(string FileName) {
-            if(GetModel()!= null)
-                GetModel().SaveToFile(FileName);
+         //   if(GetModel()!= null)
+         //       GetModel().SaveToFile(FileName);
         }
         public virtual void SaveToFile() {
-            if (GetModel() != null)
-                GetModel().SaveToFile();
+         //   if (GetModel() != null)
+         //       GetModel().SaveToFile();
         }
 
         #endregion
@@ -231,12 +231,7 @@ namespace smartEdit.Core {
                     Item.Name = "saveAsToolStripMenuItem";
                     Items.Add(Item);
                     Items.Add(new ToolStripSeparator());
-                    Item = new ToolStripMenuItem("Export...", Properties.Resources.SymbolSave, ExportAs_Click);
-                    Item.ImageTransparentColor = System.Drawing.Color.Black;
-                    Item.MergeAction = MergeAction.Replace;
-                    Item.Enabled = GetModel() != null;
-                    Item.Name = "exportAsToolStripMenuItem";
-                    Items.Add(Item);
+                    
                 } else if (Parent.Text == "&Tools") {
                     Item = new ToolStripMenuItem("PageSettings...");
                     Item.ImageTransparentColor = System.Drawing.Color.Black;
@@ -258,8 +253,6 @@ namespace smartEdit.Core {
             ToolStripMenuItem Item;
             List<ToolStripItem> Items = new List<ToolStripItem>();
             int Selected = 0;
-            if (GetModel() != null) {
-            }
 
             Item = new ToolStripMenuItem("&Kopieren", Properties.Resources.SymbolCopy, Copy_Click);
             Item.ImageTransparentColor = System.Drawing.Color.Black;
@@ -304,11 +297,11 @@ namespace smartEdit.Core {
         private void Delete_Click(object sender, EventArgs e) {
         }
         private void Save_Click(object sender, EventArgs e) {
-            if (GetModel().GetFileName() == "") {
-                SaveAs_Click(sender, e);
-            } else {
-                SaveToFile();
-            }
+          //  if (GetModel().GetFileName() == "") {
+          //      SaveAs_Click(sender, e);
+          //  } else {
+          //      SaveToFile();
+          //  }
         }
         private void SaveAs_Click(object sender, EventArgs e) {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -354,7 +347,7 @@ namespace smartEdit.Core {
             Editor.Show();
         }
         #endregion
-        public virtual Core.ModelDocument GetModel() { return m_Model; }
+        //public virtual Core.ModelDocument GetModel() { return m_Model; }
         public virtual CmdStackGroup GetCmdStack() { return m_CmdStackGroup; }
         public virtual void OnMouseInput(object sender, MouseInputEventArgs e) {
             if (e.MouseArg.Clicks == 2) {//doubleclick

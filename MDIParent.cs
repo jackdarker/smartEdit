@@ -107,11 +107,16 @@ namespace smartEdit {
             childForm.SetController(ControllerDocument.Instance);  //do we need this?
             childForm.MdiParent = this;
             childForm.Activated += new EventHandler(childForm_Activated);
+            childForm.EventUpdateStatus +=(childForm_EventUpdateStatus);
             childForm.Text = "Window " + (++childFormNumber);
             childForm.WindowState = FormWindowState.Maximized;
             childForm.Show();
             this.ActivateMdiChild(childForm);
             return childForm;
+        }
+
+        void childForm_EventUpdateStatus(object sender, UpdateStatusEventArgs e) {
+            this.toolStripStatusLabel.Text = e.Text;
         }
 
         void childForm_Activated(object sender, EventArgs e) {
@@ -133,6 +138,8 @@ namespace smartEdit {
                     this.ActiveMdiChild.Tag = tp;
                     this.ActiveMdiChild.FormClosed +=
                         new FormClosedEventHandler( ActiveMdiChild_FormClosed);
+                    this.ActiveMdiChild.TextChanged +=new EventHandler(
+                        (Object, ev)=>{ tabForms.SelectedTab.Text = this.ActiveMdiChild.Text+ "    .";});
                 }
 
                 if (!tabForms.Visible) tabForms.Visible = true;

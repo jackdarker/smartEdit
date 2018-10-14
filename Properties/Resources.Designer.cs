@@ -623,6 +623,16 @@ namespace smartEdit.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap SymbolSaveAll {
+            get {
+                object obj = ResourceManager.GetObject("SymbolSaveAll", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SymbolSearch {
             get {
                 object obj = ResourceManager.GetObject("SymbolSearch", resourceCulture);
